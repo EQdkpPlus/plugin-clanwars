@@ -40,6 +40,7 @@ if ( !class_exists( "pdh_r_clanwars_categories" ) ) {
 		'clanwars_categories_website' => array('website', array('%intCategoryID%'), array()),
 		'clanwars_categories_icon' => array('icon', array('%intCategoryID%'), array()),
 		'clanwars_categories_text' => array('text', array('%intCategoryID%'), array()),
+		'clanwars_categories_actions' => array('actions', array('%intCategoryID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
 				
 	public function reset(){
@@ -76,7 +77,25 @@ if ( !class_exists( "pdh_r_clanwars_categories" ) ) {
 		 * @return multitype: List of all IDs
 		 */				
 		public function get_id_list(){
+			if ($this->clanwars_categories === null) return array();
 			return array_keys($this->clanwars_categories);
+		}
+		
+		/**
+		 * Get all data of Element with $strID
+		 * @return multitype: Array with all data
+		 */				
+		public function get_data($intCategoryID){
+			if (isset($this->clanwars_categories[$intCategoryID])){
+				return $this->clanwars_categories[$intCategoryID];
+			}
+			return false;
+		}
+		
+		public function get_actions($intCategoryID, $baseurl, $url_suffix=''){
+			return "<a href='".$baseurl.$this->SID.'&amp;c='.$intCategoryID.$url_suffix."'>
+				<i class='fa fa-pencil fa-lg' title='".$this->user->lang('edit')."'></i>
+			</a>";
 		}
 				
 		/**
@@ -108,11 +127,17 @@ if ( !class_exists( "pdh_r_clanwars_categories" ) ) {
 		 * @param integer $intCategoryID
 		 * @return multitype website
 		 */
-		 public function get_website($intCategoryID){
+		public function get_website($intCategoryID){
 			if (isset($this->clanwars_categories[$intCategoryID])){
 				return $this->clanwars_categories[$intCategoryID]['website'];
 			}
 			return false;
+		}
+		
+		public function get_html_website($intCategoryID){
+			$strWebsite = $this->get_website($intCategoryID);
+			if ($strWebsite && strlen($strWebsite)) return '<a href="'.$strWebsite.'" target="_blank">'.$strWebsite.'</a>';
+			return '';
 		}
 
 		/**
@@ -126,6 +151,26 @@ if ( !class_exists( "pdh_r_clanwars_categories" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_icon($intCategoryID, $intSize=32){
+			$strIcon = $this->get_icon($intCategoryID);
+			if ($strIcon && strlen($strIcon)){
+				$strExtension = pathinfo($strIcon, PATHINFO_EXTENSION);
+				$strIconName = md5('cat_'.$intCategoryID.$strIcon).'_'.intval($intSize).'.'.$strExtension;
+				$strThumbnailIcon = $this->pfh->FolderPath('thumbnails', 'clanwars').$strIconName;
+				if (is_file($strThumbnailIcon)){
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intCategoryID).'"/>';
+				} else {
+					$strFullImage = $this->pfh->FolderPath('category_icons', 'clanwars').$strIcon;
+					$this->pfh->thumbnail($strFullImage, $this->pfh->FolderPath('thumbnails', 'clanwars'), $strIconName, intval($intSize));
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intCategoryID).'"/>';
+				}
+			}
+			
+			return '';
+		}
+		
+		
 
 		/**
 		 * Returns text for $intCategoryID				

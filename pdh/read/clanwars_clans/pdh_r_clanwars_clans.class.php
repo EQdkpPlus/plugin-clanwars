@@ -63,15 +63,15 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			if($objQuery){
 				while($drow = $objQuery->fetchAssoc()){
 					$this->clanwars_clans[(int)$drow['id']] = array(
-						'id'				=> (int)$drow['id'],
-						'name'				=> $drow['name'],
-						'shortname'			=> $drow['shortname'],
-						'country'			=> $drow['country'],
-						'website'			=> $drow['website'],
-						'estdate'			=> (int)$drow['estdate'],
-						'icon'				=> (int)$drow['icon'],
-						'tag'				=> $drow['tag'],
-						'tag_position'		=> (int)$drow['tag_position'],
+						'id'			=> (int)$drow['id'],
+						'name'			=> $drow['name'],
+						'shortname'		=> $drow['shortname'],
+						'country'		=> $drow['country'],
+						'website'		=> $drow['website'],
+						'estdate'		=> (int)$drow['estdate'],
+						'icon'			=> (int)$drow['icon'],
+						'tag'			=> $drow['tag'],
+						'tag_position'	=> (int)$drow['tag_position'],
 					);
 				}
 				
@@ -84,7 +84,19 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 		 * @return multitype: List of all IDs
 		 */				
 		public function get_id_list(){
+			if ($this->clanwars_clans === null) return array();
 			return array_keys($this->clanwars_clans);
+		}
+		
+		/**
+		 * Get all data of Element with $strID
+		 * @return multitype: Array with all data
+		 */				
+		public function get_data($intClanID){
+			if (isset($this->clanwars_clans[$intClanID])){
+				return $this->clanwars_clans[$intClanID];
+			}
+			return false;
 		}
 				
 		/**

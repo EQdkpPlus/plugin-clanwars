@@ -37,6 +37,8 @@ if(!class_exists('pdh_w_clanwars_awards')) {
 				'date'		=> $arrData['date'],
 				'rank'		=> $arrData['rank'],
 				'teamID'	=> $arrData['teamID'],
+				'gameID'	=> $arrData['gameID'],
+				'userID'	=> $arrData['userID'],
 				'website'	=> $arrData['website'],
 			);
 			
@@ -58,6 +60,8 @@ if(!class_exists('pdh_w_clanwars_awards')) {
 				'rank'		=> $arrData['rank'],
 				'teamID'	=> $arrData['teamID'],
 				'website'	=> $arrData['website'],
+				'gameID'	=> $arrData['gameID'],
+				'userID'	=> $arrData['userID'],
 			);
 			
 			$objQuery = $this->db->prepare("UPDATE __clanwars_awards :p WHERE id =?")->set($arrSet)->execute($id);

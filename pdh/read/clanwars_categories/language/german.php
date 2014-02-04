@@ -22,12 +22,9 @@ if ( !defined('EQDKP_INC') ){
 
 $module_lang = array(
 	'actions'		=> '',
-	'event'			=> 'Event',
-	'rank'			=> 'Platzierung',
-	'date'			=> 'Datum',
-	'gameID'		=> 'Spiel',
-	'teamID'		=> 'Team',
-	'userID'		=> 'Spieler',
+	'name'			=> 'Name',
+	'icon'			=> 'Icon',
+	'website'		=> 'Website',
 );
 
 ?>

@@ -41,6 +41,7 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 		'clanwars_awards_rank' => array('rank', array('%intAwardID%'), array()),
 		'clanwars_awards_gameID' => array('gameID', array('%intAwardID%'), array()),
 		'clanwars_awards_teamID' => array('teamID', array('%intAwardID%'), array()),
+		'clanwars_awards_userID' => array('userID', array('%intAwardID%'), array()),
 		'clanwars_awards_website' => array('website', array('%intAwardID%'), array()),
 		'clanwars_awards_actions' => array('actions', array('%intAwardID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
@@ -66,9 +67,10 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 						'event'			=> $drow['event'],
 						'date'			=> (int)$drow['date'],
 						'rank'			=> (int)$drow['rank'],
-						'gameID'			=> (int)$drow['gameID'],
-						'teamID'			=> (int)$drow['teamID'],
-						'website'			=> $drow['website'],
+						'gameID'		=> (int)$drow['gameID'],
+						'teamID'		=> (int)$drow['teamID'],
+						'userID'		=> (int)$drow['userID'],
+						'website'		=> $drow['website'],
 
 					);
 				}
@@ -175,7 +177,14 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 		 */
 		 public function get_gameID($intAwardID){
 			$intTeamID = $this->get_teamID($intAwardID);
-			$intGameID = $this->pdh->get('clanwars_teams', 'gameID', array($intTeamID));
+			$intGameID = 0;
+			
+			if ($this->clanwars_awards[$intAwardID]['gameID'] > 0){
+				$intGameID = $this->clanwars_awards[$intAwardID]['gameID'];
+			} elseif($intTeamID > 0){
+				$intGameID = $this->pdh->get('clanwars_teams', 'gameID', array($intTeamID));
+			}
+		 
 			return $intGameID;
 		}
 		
@@ -201,6 +210,24 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 			$intTeamID = $this->get_teamID($intAwardID);
 			$strTeamname = $this->pdh->get('clanwars_teams', 'name', array($intTeamID));
 			return $strTeamname;
+		}
+		
+		/**
+		 * Returns userID for $intAwardID				
+		 * @param integer $intAwardID
+		 * @return multitype userID
+		 */
+		 public function get_userID($intAwardID){
+			if (isset($this->clanwars_awards[$intAwardID])){
+				return $this->clanwars_awards[$intAwardID]['userID'];
+			}
+			return false;
+		}
+		
+		public function get_html_userID($intAwardID){
+			$intUserID = $this->get_userID($intAwardID);
+			if ($intUserID > 0) return $this->pdh->geth('user', 'country', array($intUserID)).' '.$this->pdh->get('user', 'name', array($intUserID));
+			return '';
 		}
 
 		/**

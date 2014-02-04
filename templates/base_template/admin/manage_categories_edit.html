@@ -1,0 +1,40 @@
+<!-- IF S_NORMAL_HEADER -->
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="{EQDKP_CONTROLLER_PATH}{SID}" title="{L_home}"><i class="fa fa-home"></i></a></li>
+		<li><a href="{EQDKP_ROOT_PATH}admin/{SID}">{L_menu_admin_panel}</a>
+		<li><a href="manage_awards.php{SID}">{L_clanwars}: {L_cw_manage_categories}</a></li>
+		<li class="current"><a>{CATEGORY_NAME}</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+<!-- ENDIF -->
+
+<form method="post" action="{ACTION}" name="{FORM_ID}" id="{FORM_ID}">
+	<div class="contentHeader">
+		<h1 class="contentTitle">{CATEGORY_NAME}</h1>
+	</div>
+	<div class="clear"></div>
+	
+
+
+	<fieldset class="settings">
+		<!-- BEGIN fields -->
+		<dl>
+			<dt><label>{fields.NAME}</label><br /><span>{fields.HELP}</span></dt>
+			<dd>{fields.FIELD}</dd>
+		</dl>
+		<!-- END fields -->
+	</fieldset>
+
+
+
+
+	<div class="contentFooter">
+		<input type="hidden" name="a" value="{CATEGORYID}" />
+		<button type="submit" name="save" class="mainoption"><i class="fa fa-check"></i>{L_save}</button>
+		<button type="reset" name="reset" class="liteoption"><i class="fa fa-trash-o"></i>{L_reset}</button>
+		<button type="button" class="liteoption" onclick="window.location='manage_categories.php{SID}'"><i class="fa fa-chevron-left"></i>{L_back}</button>
+	</div>
+{CSRF_TOKEN}	
+</form>

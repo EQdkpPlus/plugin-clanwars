@@ -1,0 +1,33 @@
+<!-- IF S_NORMAL_HEADER -->
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="{EQDKP_CONTROLLER_PATH}{SID}" title="{L_home}"><i class="fa fa-home"></i></a></li>
+		<li><a href="{EQDKP_ROOT_PATH}admin/{SID}">{L_menu_admin_panel}</a>
+		<li class="current"><a>{L_clanwars}: {L_cw_manage_clans}</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+<!-- ENDIF -->
+
+
+
+<form method="post" action="{ACTION}" name="post">
+	<div class="contentHeader">
+		<h1 class="contentTitle">{L_cw_manage_clans}</h1>
+	</div>
+	<div class="tableHeader floatRight">
+		<button class="mainoption" type="button" name="addaward" onclick="window.location='manage_clans.php{SID}&amp;upd=true'"><i class="fa fa-plus"></i>{L_cw_add_clan}</button>
+	</div>
+	<div class="clear"></div>
+	<table width="100%" border="0" cellspacing="1" cellpadding="2" class="colorswitch">
+		{CLAN_LIST}
+	</table>
+	<div class="center pagination_wrapper">
+		{PAGINATION}
+	</div>
+	<div class="contentFooter">
+		<button class="mainoption" type="button" name="del" onclick="delete_warning();"><i class="fa fa-times"></i>{L_cw_delete_selected_clans}</button>
+		<input type="hidden" name="del" value="1" disabled="disabled" id="mass_del_submit" />
+	</div>
+{CSRF_TOKEN}	
+</form>

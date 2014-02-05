@@ -65,9 +65,10 @@ DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	`country` VARCHAR(3) NOT NULL,
 	`website` TEXT NOT NULL,
 	`estdate` INT(10) NOT NULL,
-	`icon` INT(10) NOT NULL,
+	`icon` VARCHAR(255) NOT NULL COLLATE 'utf8_bin',
 	`tag` VARCHAR(50) NOT NULL,
 	`tag_position` INT(2) NOT NULL,
+	`own_clan` TINYINT(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
 )
 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -85,7 +86,7 @@ DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	`website` TEXT NOT NULL,
 	`date` INT(11) NOT NULL,
 	`status` INT(11) NOT NULL,
-	`message` INT(11) NOT NULL,
+	`message` TEXT NOT NULL COLLATE 'utf8_bin',
 	PRIMARY KEY (`id`)
 )
 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

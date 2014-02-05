@@ -84,7 +84,7 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 				if (is_array($this->clanwars_teams)){
 					$arrOut = array();
 					foreach($this->clanwars_teams as $key => $val){
-						if ($val['clanid'] === 0) $arrOut[] = $key;
+						if($this->pdh->get('clanwars_clans', 'own_clan', array($val['clanid']))) $arrOut[] = $key;
 					}
 					return $arrOut;
 				}

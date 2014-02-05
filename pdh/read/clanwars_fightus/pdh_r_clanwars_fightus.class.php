@@ -23,7 +23,7 @@ if ( !defined('EQDKP_INC') ){
 if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 	class pdh_r_clanwars_fightus extends pdh_r_generic{
 		public static function __shortcuts() {
-		$shortcuts = array('pdc', 'db', 'user', 'pdh', 'time', 'env', 'config');
+		$shortcuts = array();
 		return array_merge(parent::$shortcuts, $shortcuts);
 	}				
 	
@@ -32,26 +32,29 @@ if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 
 	public $hooks = array(
 		'clanwars_fightus_update',
-	);		
+	);
+	
+	private $countries = false;
 			
 	public $presets = array(
-		'clanwars_fightus_id' => array('id', array('%intFightUsID%'), array()),
-		'clanwars_fightus_nick' => array('nick', array('%intFightUsID%'), array()),
-		'clanwars_fightus_email' => array('email', array('%intFightUsID%'), array()),
-		'clanwars_fightus_additionalcontact' => array('additionalcontact', array('%intFightUsID%'), array()),
-		'clanwars_fightus_gameid' => array('gameid', array('%intFightUsID%'), array()),
-		'clanwars_fightus_teamid' => array('teamid', array('%intFightUsID%'), array()),
-		'clanwars_fightus_clanname' => array('clanname', array('%intFightUsID%'), array()),
-		'clanwars_fightus_shortname' => array('shortname', array('%intFightUsID%'), array()),
-		'clanwars_fightus_country' => array('country', array('%intFightUsID%'), array()),
-		'clanwars_fightus_website' => array('website', array('%intFightUsID%'), array()),
-		'clanwars_fightus_date' => array('date', array('%intFightUsID%'), array()),
-		'clanwars_fightus_status' => array('status', array('%intFightUsID%'), array()),
-		'clanwars_fightus_message' => array('message', array('%intFightUsID%'), array()),
+		'clanwars_fightus_id' => array('id', array('%intFightusID%'), array()),
+		'clanwars_fightus_nick' => array('nick', array('%intFightusID%'), array()),
+		'clanwars_fightus_email' => array('email', array('%intFightusID%'), array()),
+		'clanwars_fightus_additionalContact' => array('additionalContact', array('%intFightusID%'), array()),
+		'clanwars_fightus_gameID' => array('gameID', array('%intFightusID%'), array()),
+		'clanwars_fightus_teamID' => array('teamID', array('%intFightusID%'), array()),
+		'clanwars_fightus_clanname' => array('clanname', array('%intFightusID%'), array()),
+		'clanwars_fightus_shortname' => array('shortname', array('%intFightusID%'), array()),
+		'clanwars_fightus_country' => array('country', array('%intFightusID%'), array()),
+		'clanwars_fightus_website' => array('website', array('%intFightusID%'), array()),
+		'clanwars_fightus_date' => array('date', array('%intFightusID%'), array()),
+		'clanwars_fightus_status' => array('status', array('%intFightusID%'), array()),
+		'clanwars_fightus_message' => array('message', array('%intFightusID%'), array()),
+		'clanwars_fightus_actions' => array('actions', array('%intFightusID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
 				
 	public function reset(){
-			$this->pdc->del('pdh_'.clanwars_fightus.'_table');
+			$this->pdc->del('pdh_clanwars_fightus_table');
 			
 			$this->clanwars_fightus = NULL;
 	}
@@ -70,16 +73,17 @@ if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 						'id'				=> (int)$drow['id'],
 						'nick'				=> $drow['nick'],
 						'email'				=> $drow['email'],
-						'additionalcontact'	=> $drow['additionalContact'],
-						'gameid'			=> (int)$drow['gameID'],
-						'teamid'			=> (int)$drow['teamID'],
+						'additionalContact'	=> $drow['additionalContact'],
+						'gameID'			=> (int)$drow['gameID'],
+						'teamID'			=> (int)$drow['teamID'],
 						'clanname'			=> $drow['clanname'],
 						'shortname'			=> $drow['shortname'],
 						'country'			=> $drow['country'],
 						'website'			=> $drow['website'],
 						'date'				=> (int)$drow['date'],
 						'status'			=> (int)$drow['status'],
-						'message'			=> (int)$drow['message'],
+						'message'			=> $drow['message'],
+
 					);
 				}
 				
@@ -92,163 +96,232 @@ if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 		 * @return multitype: List of all IDs
 		 */				
 		public function get_id_list(){
+			if ($this->clanwars_fightus === null) return array();
 			return array_keys($this->clanwars_fightus);
+		}
+		
+		/**
+		 * Get all data of Element with $strID
+		 * @return multitype: Array with all data
+		 */				
+		public function get_data($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID];
+			}
+			return false;
 		}
 				
 		/**
-		 * Returns id for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns id for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype id
 		 */
-		 public function get_id($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['id'];
+		 public function get_id($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['id'];
 			}
 			return false;
 		}
+		
+		public function get_actions($intFightusID, $baseurl, $url_suffix=''){
+			return "<a href='".$baseurl.$this->SID.'&amp;f='.$intFightusID.$url_suffix."'>
+				<i class='fa fa-pencil fa-lg' title='".$this->user->lang('edit')."'></i>
+			</a>
+			
+			<a href='manage_clans.php".$this->SID."&upd=true&convert_fightus=".$intFightusID."'>
+				<i class='fa fa-home fa-lg' title='".$this->user->lang('cw_convert_to_clan')."'></i>
+			</a>
+			
+			<a href='manage_wars.php".$this->SID."&upd=true&convert_fightus=".$intFightusID."'>
+				<i class='fa fa-crosshairs fa-lg' title='".$this->user->lang('cw_convert_to_war')."'></i>
+			</a>
+			
+			";
+		}
 
 		/**
-		 * Returns nick for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns nick for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype nick
 		 */
-		 public function get_nick($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['nick'];
+		 public function get_nick($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['nick'];
 			}
 			return false;
 		}
 
 		/**
-		 * Returns email for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns email for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype email
 		 */
-		 public function get_email($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['email'];
+		 public function get_email($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['email'];
 			}
 			return false;
 		}
 
 		/**
-		 * Returns additionalContact for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns additionalContact for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype additionalContact
 		 */
-		 public function get_additionalcontact($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['additionalcontact'];
+		 public function get_additionalContact($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['additionalContact'];
 			}
 			return false;
 		}
 
 		/**
-		 * Returns gameID for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns gameID for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype gameID
 		 */
-		 public function get_gameid($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['gameid'];
+		 public function get_gameID($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['gameID'];
 			}
 			return false;
 		}
+		
+		public function get_html_gameID($intFightusID){
+			$intGameID = $this->get_gameID($intFightusID);
+			$strGameName = $this->pdh->get('clanwars_games', 'name', array($intGameID));
+			return $strGameName;
+		}
 
 		/**
-		 * Returns teamID for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns teamID for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype teamID
 		 */
-		 public function get_teamid($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['teamid'];
+		 public function get_teamID($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['teamID'];
 			}
 			return false;
 		}
+		
+		public function get_html_teamID($intFightusID){
+			$intTeamID = $this->get_teamID($intFightusID);
+			$strTeamname = $this->pdh->get('clanwars_teams', 'name', array($intTeamID));
+			return $strTeamname;
+		}
 
 		/**
-		 * Returns clanname for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns clanname for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype clanname
 		 */
-		 public function get_clanname($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['clanname'];
+		 public function get_clanname($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['clanname'];
 			}
 			return false;
 		}
 
 		/**
-		 * Returns shortname for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns shortname for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype shortname
 		 */
-		 public function get_shortname($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['shortname'];
+		 public function get_shortname($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['shortname'];
 			}
 			return false;
 		}
 
 		/**
-		 * Returns country for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns country for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype country
 		 */
-		 public function get_country($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['country'];
+		 public function get_country($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['country'];
 			}
 			return false;
 		}
+		
+		public function get_html_country($intFightusID, $blnWithCountryName = false){
+			$country = $this->get_country($intFightusID);
+			if ($country && strlen($country)){
+				$this->init_countries();
+				if (!$blnWithCountryName){
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.png" alt="'.$country.'" class="coretip" data-coretip="'.ucfirst(strtolower($this->countries[$country])).'" />';
+				} else {
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.png" alt="'.$country.'" /> '.ucfirst(strtolower($this->countries[$country]));
+				}
+			}
+			return '';
+		}
 
 		/**
-		 * Returns website for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns website for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype website
 		 */
-		 public function get_website($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['website'];
+		 public function get_website($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['website'];
 			}
 			return false;
 		}
 
 		/**
-		 * Returns date for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns date for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype date
 		 */
-		 public function get_date($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['date'];
+		 public function get_date($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['date'];
 			}
 			return false;
 		}
+		
+		public function get_html_date($intFightusID){
+			return $this->time->user_date($this->get_date($intFightusID));
+		}
 
 		/**
-		 * Returns status for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns status for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype status
 		 */
-		 public function get_status($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['status'];
+		 public function get_status($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['status'];
 			}
 			return false;
 		}
+		
+		public function get_html_status($intFightusID){
+			$arrStatus = $this->user->lang('cw_fightus_status');
+			return $arrStatus[$this->get_status($intFightusID)];
+		}
 
 		/**
-		 * Returns message for $intFightUsID				
-		 * @param integer $intFightUsID
+		 * Returns message for $intFightusID				
+		 * @param integer $intFightusID
 		 * @return multitype message
 		 */
-		 public function get_message($intFightUsID){
-			if (isset($this->clanwars_fightus[$intFightUsID])){
-				return $this->clanwars_fightus[$intFightUsID]['message'];
+		 public function get_message($intFightusID){
+			if (isset($this->clanwars_fightus[$intFightusID])){
+				return $this->clanwars_fightus[$intFightusID]['message'];
 			}
 			return false;
+		}
+		
+		private function init_countries(){
+			if (!$this->countries){
+				include($this->root_path.'core/country_states.php');
+				$this->countries = $country_array;
+			}
 		}
 
 	}//end class

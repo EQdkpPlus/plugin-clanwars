@@ -44,7 +44,7 @@ if ( !class_exists( "pdh_r_clanwars_categories" ) ) {
 	);
 				
 	public function reset(){
-			$this->pdc->del('pdh_'.clanwars_categories.'_table');
+			$this->pdc->del('pdh_clanwars_categories_table');
 			
 			$this->clanwars_categories = NULL;
 	}

@@ -24,10 +24,6 @@ define('PLUGIN', 'clanwars');
 $eqdkp_root_path = './../../../';
 include_once($eqdkp_root_path.'common.php');
 
-//TODO:
-// - Players for Team
-
-
 class clanwarsManageCategories extends page_generic
 {
   /**
@@ -36,7 +32,7 @@ class clanwarsManageCategories extends page_generic
    */
   public static function __shortcuts()
   {
-    $shortcuts = array('pm', 'user', 'config', 'core', 'in', 'jquery', 'html', 'tpl', 'pdc');
+	$shortcuts = array('form' => array('form', array('manage_categories')));
     return array_merge(parent::$shortcuts, $shortcuts);
   }
 

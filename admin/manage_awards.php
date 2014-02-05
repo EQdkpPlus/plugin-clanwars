@@ -36,7 +36,7 @@ class clanwarsManageAwards extends page_generic
    */
   public static function __shortcuts()
   {
-    $shortcuts = array('pm', 'user', 'config', 'core', 'in', 'jquery', 'html', 'tpl', 'pdc');
+    $shortcuts = array('form' => array('form', array('manage_awards')));
     return array_merge(parent::$shortcuts, $shortcuts);
   }
 

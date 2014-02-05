@@ -23,12 +23,14 @@ if ( !defined('EQDKP_INC') ){
 if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 	class pdh_r_clanwars_clans extends pdh_r_generic{
 		public static function __shortcuts() {
-		$shortcuts = array('pdc', 'db', 'user', 'pdh', 'time', 'env', 'config');
+		$shortcuts = array();
 		return array_merge(parent::$shortcuts, $shortcuts);
 	}				
 	
 	public $default_lang = 'english';
 	public $clanwars_clans = null;
+	
+	private $countries = false;
 
 	public $hooks = array(
 		'clanwars_clans_update',
@@ -39,15 +41,18 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 		'clanwars_clans_name' => array('name', array('%intClanID%'), array()),
 		'clanwars_clans_shortname' => array('shortname', array('%intClanID%'), array()),
 		'clanwars_clans_country' => array('country', array('%intClanID%'), array()),
+		'clanwars_clans_country_ext' => array('country', array('%intClanID%', true), array()),
 		'clanwars_clans_website' => array('website', array('%intClanID%'), array()),
 		'clanwars_clans_estdate' => array('estdate', array('%intClanID%'), array()),
 		'clanwars_clans_icon' => array('icon', array('%intClanID%'), array()),
 		'clanwars_clans_tag' => array('tag', array('%intClanID%'), array()),
 		'clanwars_clans_tag_position' => array('tag_position', array('%intClanID%'), array()),
+		'clanwars_clans_own_clan' => array('own_clan', array('%intClanID%'), array()),
+		'clanwars_clans_actions' => array('actions', array('%intClanID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
 				
 	public function reset(){
-			$this->pdc->del('pdh_'.clanwars_clans.'_table');
+			$this->pdc->del('pdh_clanwars_clans_table');
 			
 			$this->clanwars_clans = NULL;
 	}
@@ -69,9 +74,10 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 						'country'		=> $drow['country'],
 						'website'		=> $drow['website'],
 						'estdate'		=> (int)$drow['estdate'],
-						'icon'			=> (int)$drow['icon'],
+						'icon'			=> $drow['icon'],
 						'tag'			=> $drow['tag'],
 						'tag_position'	=> (int)$drow['tag_position'],
+						'own_clan'		=> (int)$drow['own_clan'],
 					);
 				}
 				
@@ -97,6 +103,12 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 				return $this->clanwars_clans[$intClanID];
 			}
 			return false;
+		}
+		
+		public function get_actions($intClanID, $baseurl, $url_suffix=''){
+			return "<a href='".$baseurl.$this->SID.'&amp;c='.$intClanID.$url_suffix."'>
+				<i class='fa fa-pencil fa-lg' title='".$this->user->lang('edit')."'></i>
+			</a>";
 		}
 				
 		/**
@@ -146,6 +158,19 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_country($intClanID, $blnWithCountryName = false){
+			$country = $this->get_country($intClanID);
+			if ($country && strlen($country)){
+				$this->init_countries();
+				if (!$blnWithCountryName){
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.png" alt="'.$country.'" class="coretip" data-coretip="'.ucfirst(strtolower($this->countries[$country])).'" />';
+				} else {
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.png" alt="'.$country.'" /> '.ucfirst(strtolower($this->countries[$country]));
+				}
+			}
+			return '';
+		}
 
 		/**
 		 * Returns website for $intClanID				
@@ -182,6 +207,24 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_icon($intClanID, $intSize=32){
+			$strIcon = $this->get_icon($intClanID);
+			if ($strIcon && strlen($strIcon)){
+				$strExtension = pathinfo($strIcon, PATHINFO_EXTENSION);
+				$strIconName = md5('clan_'.$intClanID.$strIcon).'_'.intval($intSize).'.'.$strExtension;
+				$strThumbnailIcon = $this->pfh->FolderPath('thumbnails', 'clanwars').$strIconName;
+				if (is_file($strThumbnailIcon)){
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intClanID).'"/>';
+				} else {
+					$strFullImage = $this->pfh->FolderPath('clan_icons', 'clanwars').$strIcon;
+					$this->pfh->thumbnail($strFullImage, $this->pfh->FolderPath('thumbnails', 'clanwars'), $strIconName, intval($intSize));
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intClanID).'"/>';
+				}
+			}
+			
+			return '';
+		}
 
 		/**
 		 * Returns tag for $intClanID				
@@ -205,6 +248,25 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 				return $this->clanwars_clans[$intClanID]['tag_position'];
 			}
 			return false;
+		}
+		
+		/**
+		 * Returns own_clan for $intClanID				
+		 * @param integer $intClanID
+		 * @return multitype own_clan
+		 */
+		 public function get_own_clan($intClanID){
+			if (isset($this->clanwars_clans[$intClanID])){
+				return $this->clanwars_clans[$intClanID]['own_clan'];
+			}
+			return false;
+		}
+		
+		private function init_countries(){
+			if (!$this->countries){
+				include($this->root_path.'core/country_states.php');
+				$this->countries = $country_array;
+			}
 		}
 
 	}//end class

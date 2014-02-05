@@ -1,0 +1,44 @@
+<!-- IF S_NORMAL_HEADER -->
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="{EQDKP_CONTROLLER_PATH}{SID}" title="{L_home}"><i class="fa fa-home"></i></a></li>
+		<li><a href="{EQDKP_ROOT_PATH}admin/{SID}">{L_menu_admin_panel}</a>
+		<li><a href="manage_fightus.php{SID}">{L_clanwars}: {L_cw_manage_fightus}</a></li>
+		<li class="current"><a>{FIGHTUS_NAME}</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+<!-- ENDIF -->
+
+<form method="post" action="{ACTION}" name="{FORM_ID}" id="{FORM_ID}">
+	<div class="contentHeader">
+		<h1 class="contentTitle">{FIGHTUS_NAME}</h1>
+	</div>
+	<div class="floatRight">{MENU_OPTIONS}</div>
+	<div class="clear"></div>
+	
+	<!-- BEGIN fieldsets -->
+	<!-- IF fieldsets.INFO -->
+	<div class="infobox infobox-large infobox-blue clearfix">
+		<i class="fa fa-info-circle fa-4x pull-left"></i> {fieldsets.INFO}
+	</div>
+	<!-- ENDIF -->
+	<fieldset class="settings">
+		<legend>{fieldsets.NAME}</legend>
+		<!-- BEGIN fields -->
+		<dl>
+			<dt><label>{fieldsets.fields.NAME}</label><br /><span>{fieldsets.fields.HELP}</span></dt>
+			<dd>{fieldsets.fields.FIELD}</dd>
+		</dl>
+		<!-- END fields -->
+	</fieldset>
+	<!-- END fieldsets -->
+
+	<div class="contentFooter">
+		<input type="hidden" name="a" value="{FIGHTUSID}" />
+		<button type="submit" name="save" class="mainoption"><i class="fa fa-check"></i>{L_save}</button>
+		<button type="reset" name="reset" class="liteoption"><i class="fa fa-trash-o"></i>{L_reset}</button>
+		<button type="button" class="liteoption" onclick="window.location='manage_fightus.php{SID}'"><i class="fa fa-chevron-left"></i>{L_back}</button>
+	</div>
+{CSRF_TOKEN}	
+</form>

@@ -21,13 +21,13 @@ if ( !defined('EQDKP_INC') ){
 }
 
 $module_lang = array(
-	'actions'		=> 'Aktionen',
-	'clanname'		=> 'Clanname',
-	'country'		=> 'Land',
-	'gameID'		=> 'Spiel',
-	'status'		=> 'Status',
-	'teamID'		=> 'Team',
-	'date'			=> 'Datum',
+	'actions'		=> '',
+	'icon'			=> 'Icon',
+	'name'			=> 'Name',
+	'version'		=> 'Version',
+	'genre'			=> 'Genre',
+	'company'		=> 'Hersteller',
+	'pubdate'		=> 'Veröffentlichungsdatum',
 );
 
 ?>

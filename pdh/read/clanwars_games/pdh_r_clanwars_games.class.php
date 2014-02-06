@@ -23,7 +23,7 @@ if ( !defined('EQDKP_INC') ){
 if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 	class pdh_r_clanwars_games extends pdh_r_generic{
 		public static function __shortcuts() {
-		$shortcuts = array('pdc', 'db', 'user', 'pdh', 'time', 'env', 'config');
+		$shortcuts = array();
 		return array_merge(parent::$shortcuts, $shortcuts);
 	}				
 	
@@ -44,10 +44,11 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 		'clanwars_games_company' => array('company', array('%intGameID%'), array()),
 		'clanwars_games_website' => array('website', array('%intGameID%'), array()),
 		'clanwars_games_usk' => array('usk', array('%intGameID%'), array()),
+		'clanwars_games_actions' => array('actions', array('%intGameID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
 				
 	public function reset(){
-			$this->pdc->del('pdh_'.clanwars_games.'_table');
+			$this->pdc->del('pdh_clanwars_games_table');
 			
 			$this->clanwars_games = NULL;
 	}
@@ -72,7 +73,6 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 						'company'		=> $drow['company'],
 						'website'		=> $drow['website'],
 						'usk'			=> (int)$drow['usk'],
-
 					);
 				}
 				
@@ -85,7 +85,25 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 		 * @return multitype: List of all IDs
 		 */				
 		public function get_id_list(){
+			if ($this->clanwars_games === null) return array();
 			return array_keys($this->clanwars_games);
+		}
+		
+		/**
+		 * Get all data of Element with $strID
+		 * @return multitype: Array with all data
+		 */				
+		public function get_data($intGameID){
+			if (isset($this->clanwars_games[$intGameID])){
+				return $this->clanwars_games[$intGameID];
+			}
+			return false;
+		}
+		
+		public function get_actions($intGameID, $baseurl, $url_suffix=''){
+			return "<a href='".$baseurl.$this->SID.'&amp;g='.$intGameID.$url_suffix."'>
+				<i class='fa fa-pencil fa-lg' title='".$this->user->lang('edit')."'></i>
+			</a>";
 		}
 				
 		/**
@@ -135,6 +153,24 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_icon($intGameID, $intSize=32){
+			$strIcon = $this->get_icon($intGameID);
+			if ($strIcon && strlen($strIcon)){
+				$strExtension = pathinfo($strIcon, PATHINFO_EXTENSION);
+				$strIconName = md5('game_'.$intGameID.$strIcon).'_'.intval($intSize).'.'.$strExtension;
+				$strThumbnailIcon = $this->pfh->FolderPath('thumbnails', 'clanwars').$strIconName;
+				if (is_file($strThumbnailIcon)){
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intGameID).'"/>';
+				} else {
+					$strFullImage = $this->pfh->FolderPath('game_icons', 'clanwars').$strIcon;
+					$this->pfh->thumbnail($strFullImage, $this->pfh->FolderPath('thumbnails', 'clanwars'), $strIconName, intval($intSize));
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intGameID).'"/>';
+				}
+			}
+			
+			return '';
+		}
 
 		/**
 		 * Returns pubdate for $intGameID				
@@ -146,6 +182,13 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 				return $this->clanwars_games[$intGameID]['pubdate'];
 			}
 			return false;
+		}
+		
+		public function get_html_pubdate($intGameID){
+			if ($this->get_pubdate($intGameID)) {
+				return $this->time->user_date($this->get_pubdate($intGameID));
+			}
+			return '';
 		}
 
 		/**

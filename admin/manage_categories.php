@@ -109,7 +109,7 @@ class clanwarsManageCategories extends page_generic
 		$this->form->add_fields($this->fields());
 		$arrSave = $this->form->return_values();
 		
-		$intCategoryID = $this->in->get('a', 0);
+		$intCategoryID = $this->in->get('c', 0);
 		
 		$arrResult = false;
 		if ($intCategoryID){

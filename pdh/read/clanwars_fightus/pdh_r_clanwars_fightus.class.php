@@ -136,6 +136,10 @@ if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 				<i class='fa fa-crosshairs fa-lg' title='".$this->user->lang('cw_convert_to_war')."'></i>
 			</a>
 			
+			<a href='".$this->routing->build('editcalendarevent').'&hookapp=clanwars&hookid='.$intFightusID."'>
+				<i class='fa fa-calendar fa-lg' title='".$this->user->lang('cw_convert_to_calendarevent')."'></i>
+			</a>
+			
 			";
 		}
 
@@ -285,7 +289,7 @@ if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 		}
 		
 		public function get_html_date($intFightusID){
-			return $this->time->user_date($this->get_date($intFightusID));
+			return $this->time->user_date($this->get_date($intFightusID), true);
 		}
 
 		/**
@@ -315,6 +319,10 @@ if ( !class_exists( "pdh_r_clanwars_fightus" ) ) {
 				return $this->clanwars_fightus[$intFightusID]['message'];
 			}
 			return false;
+		}
+		
+		public function get_delete_name($intFightusID){
+			return $this->get_clanname($intFightusID).', '.$this->get_html_date($intFightusID);
 		}
 		
 		private function init_countries(){

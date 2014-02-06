@@ -24,6 +24,9 @@ define('PLUGIN', 'clanwars');
 $eqdkp_root_path = './../../../';
 include_once($eqdkp_root_path.'common.php');
 
+//TODO: Email bei Statuswechsel versenden
+
+
 class clanwarsManageFightus extends page_generic
 {
   /**
@@ -32,7 +35,7 @@ class clanwarsManageFightus extends page_generic
    */
   public static function __shortcuts()
   {
-    $shortcuts = array('form' => array('form', array('manage_fightus')));
+    $shortcuts = array('form' => array('form', array('manage_fightus')), 'email' => 'MyMailer');
     return array_merge(parent::$shortcuts, $shortcuts);
   }
 
@@ -152,13 +155,35 @@ class clanwarsManageFightus extends page_generic
 		$this->form->add_fieldsets($this->fields());
 		$arrSave = $this->form->return_values();
 		
-		$intFightusID = $this->in->get('a', 0);
+		$intFightusID = $this->in->get('f', 0);
 		
 		$arrResult = false;
+		$blnSendMail = false;
+		
 		if ($intFightusID){
+			$arrOldStatus = $this->pdh->get('clanwars_fightus', 'status', array($intFightusID));
+			if ($arrSave['status'] != $arrOldStatus) $blnSendMail = true;
+			
 			$arrResult = $this->pdh->put('clanwars_fightus', 'update_fightus', array($intFightusID, $arrSave));
 		} else {
 			$arrResult = $this->pdh->put('clanwars_fightus', 'add_fightus', array($arrSave));
+			if ($arrSave['status'] != 0) $blnSendMail = true;
+		}
+		
+		if ($blnSendMail){
+			$arrStatus = $this->user->lang('cw_fightus_status');
+			
+			$bodyvars = array(
+				'F_NICKNAME'	=> $arrSave['nick'],
+				'COMMENT'		=> (strlen($arrSave['mail_message'])) ? '----------------------------<br />'.$this->bbcode->toHTML($arrSave['mail_message']).'<br />----------------------------<br />' : '',
+				'F_STATUS'		=> $arrStatus[$arrSave['status']],
+				'F_DATE'		=> $this->time->user_date($arrSave['date'], true),
+				'GUILDTAG'		=> $this->config->get('guildtag'),
+				'F_TEAM'		=> $this->pdh->geth('clanwars_fightus', 'teamID', array($arrSave['teamID'])),
+				'F_GAME'		=> $this->pdh->geth('clanwars_fightus', 'gameID', array($arrSave['gameID'])),
+			);
+			
+			$this->email->SendMailFromAdmin($arrSave['email'], $this->user->lang('cw_fightus_email_subject'), $this->root_path.'plugins/clanwars/language/'.$this->user->data['user_lang'].'/email/fightus_statuschange.html', $bodyvars);		
 		}
 		
 		$messages = array();
@@ -197,6 +222,12 @@ class clanwarsManageFightus extends page_generic
 				'name'	=> $this->user->lang('cw_convert_to_war'),
 				'link'	=> 'manage_wars.php'.$this->SID.'&upd=true&convert_fightus='.$intFightusID,
 				'icon'	=> 'fa-crosshairs',
+				'perm'	=> true
+			),
+			3 => array(
+				'name'	=> $this->user->lang('cw_convert_to_calendarevent'),
+				'link'	=> $this->routing->build('editcalendarevent').'&hookapp=clanwars&hookid='.$intFightusID,
+				'icon'	=> 'fa-calendar',
 				'perm'	=> true
 			),
 		);

@@ -128,7 +128,7 @@ class clanwarsManageClans extends page_generic
 		$this->form->add_fields($this->fields());
 		$arrSave = $this->form->return_values();
 		
-		$intClanID = $this->in->get('a', 0);
+		$intClanID = $this->in->get('c', 0);
 		
 		$arrResult = false;
 		if ($intClanID){

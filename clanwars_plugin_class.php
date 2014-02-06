@@ -99,17 +99,17 @@ class clanwars extends plugin_generic
 	$this->add_pdh_write_module('clanwars_categories');
 	$this->add_pdh_write_module('clanwars_clans');
 	$this->add_pdh_write_module('clanwars_fightus');
+	$this->add_pdh_write_module('clanwars_games');
+	$this->add_pdh_write_module('clanwars_teams');
 	
     // -- Hooks -------------------------------------------
     #$this->add_hook('search', 'clanwars_search_hook', 'search');
+	$this->add_hook('calendarevent_prefill', 'clanwars_calendarevent_prefill_hook', 'calendarevent_prefill');
     
     //Routing
 	#$this->routing->addRoute('WriteApplication', 'addrequest', 'plugins/clanwars/page_objects');
 	#$this->routing->addRoute('ListApplications', 'listrequests', 'plugins/clanwars/page_objects');
 	#$this->routing->addRoute('ViewApplication', 'viewrequest', 'plugins/clanwars/page_objects');
-	
-	#$this->add_hook('portal', 'clanwars_portal_hook', 'portal');
-	#$this->add_hook('comments_save', 'clanwars_comments_save_hook', 'comments_save');
 	
 	// -- Menu --------------------------------------------
     $this->add_menu('admin', $this->gen_admin_menu());

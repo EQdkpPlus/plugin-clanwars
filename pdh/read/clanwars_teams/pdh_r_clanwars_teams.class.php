@@ -23,7 +23,7 @@ if ( !defined('EQDKP_INC') ){
 if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 	class pdh_r_clanwars_teams extends pdh_r_generic{
 		public static function __shortcuts() {
-		$shortcuts = array('pdc', 'db', 'user', 'pdh', 'time', 'env', 'config');
+		$shortcuts = array();
 		return array_merge(parent::$shortcuts, $shortcuts);
 	}				
 	
@@ -40,12 +40,13 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 		'clanwars_teams_description' => array('description', array('%intTeamID%'), array()),
 		'clanwars_teams_icon' => array('icon', array('%intTeamID%'), array()),
 		'clanwars_teams_members' => array('members', array('%intTeamID%'), array()),
-		'clanwars_teams_gameid' => array('gameid', array('%intTeamID%'), array()),
-		'clanwars_teams_clanid' => array('clanid', array('%intTeamID%'), array()),
+		'clanwars_teams_gameID' => array('gameID', array('%intTeamID%'), array()),
+		'clanwars_teams_clanID' => array('clanID', array('%intTeamID%'), array()),
+		'clanwars_teams_actions' => array('actions', array('%intTeamID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
 				
 	public function reset(){
-			$this->pdc->del('pdh_'.clanwars_teams.'_table');
+			$this->pdc->del('pdh_clanwars_teams_table');
 			
 			$this->clanwars_teams = NULL;
 	}
@@ -61,13 +62,13 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 			if($objQuery){
 				while($drow = $objQuery->fetchAssoc()){
 					$this->clanwars_teams[(int)$drow['id']] = array(
-						'id'			=> (int)$drow['id'],
-						'name'			=> $drow['name'],
-						'description'	=> $drow['description'],
-						'icon'			=> $drow['icon'],
-						'members'		=> $drow['members'],
-						'gameid'		=> (int)$drow['gameID'],
-						'clanid'		=> (int)$drow['clanID'],
+						'id'				=> (int)$drow['id'],
+						'name'				=> $drow['name'],
+						'description'		=> $drow['description'],
+						'icon'				=> $drow['icon'],
+						'members'			=> unserialize($drow['members']),
+						'gameID'			=> (int)$drow['gameID'],
+						'clanID'			=> (int)$drow['clanID'],
 					);
 				}
 				
@@ -79,16 +80,26 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 		/**
 		 * @return multitype: List of all IDs
 		 */				
-		public function get_id_list($blnOnlyOwnTeams = false){
-			if ($blnOnlyOwnTeams){
-				if (is_array($this->clanwars_teams)){
-					$arrOut = array();
-					foreach($this->clanwars_teams as $key => $val){
-						if($this->pdh->get('clanwars_clans', 'own_clan', array($val['clanid']))) $arrOut[] = $key;
-					}
-					return $arrOut;
-				}
-			} else return ((is_array($this->clanwars_teams)) ? array_keys($this->clanwars_teams) : array());
+		public function get_id_list(){
+			if ($this->clanwars_teams === null) return array();
+			return array_keys($this->clanwars_teams);
+		}
+		
+		/**
+		 * Get all data of Element with $strID
+		 * @return multitype: Array with all data
+		 */				
+		public function get_data($intTeamID){
+			if (isset($this->clanwars_teams[$intTeamID])){
+				return $this->clanwars_teams[$intTeamID];
+			}
+			return false;
+		}
+		
+		public function get_actions($intTeamID, $baseurl, $url_suffix=''){
+			return "<a href='".$baseurl.$this->SID.'&amp;t='.$intTeamID.$url_suffix."'>
+				<i class='fa fa-pencil fa-lg' title='".$this->user->lang('edit')."'></i>
+			</a>";
 		}
 				
 		/**
@@ -138,6 +149,24 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_icon($intTeamID, $intSize=32){
+			$strIcon = $this->get_icon($intTeamID);
+			if ($strIcon && strlen($strIcon)){
+				$strExtension = pathinfo($strIcon, PATHINFO_EXTENSION);
+				$strIconName = md5('team_'.$intTeamID.$strIcon).'_'.intval($intSize).'.'.$strExtension;
+				$strThumbnailIcon = $this->pfh->FolderPath('thumbnails', 'clanwars').$strIconName;
+				if (is_file($strThumbnailIcon)){
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intTeamID).'"/>';
+				} else {
+					$strFullImage = $this->pfh->FolderPath('team_icons', 'clanwars').$strIcon;
+					$this->pfh->thumbnail($strFullImage, $this->pfh->FolderPath('thumbnails', 'clanwars'), $strIconName, intval($intSize));
+					return '<img src="'.$this->pfh->FolderPath('thumbnails', 'clanwars', 'absolute').$strIconName.'" alt="'.$this->get_name($intTeamID).'"/>';
+				}
+			}
+			
+			return '';
+		}
 
 		/**
 		 * Returns members for $intTeamID				
@@ -150,17 +179,30 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_members($intTeamID){
+			$arrMembers = $this->get_members($intTeamID);
+			if($arrMembers && is_array($arrMembers) && count($arrMembers)){
+				$arrUser = $this->pdh->aget('user', 'name', 0, array($arrMembers));
+				return implode($arrUser, ', ');
+			}
+			return '';
+		}
 
 		/**
 		 * Returns gameID for $intTeamID				
 		 * @param integer $intTeamID
 		 * @return multitype gameID
 		 */
-		 public function get_gameid($intTeamID){
+		 public function get_gameID($intTeamID){
 			if (isset($this->clanwars_teams[$intTeamID])){
-				return $this->clanwars_teams[$intTeamID]['gameid'];
+				return $this->clanwars_teams[$intTeamID]['gameID'];
 			}
 			return false;
+		}
+		
+		public function get_html_gameID($intTeamID){
+			return $this->pdh->geth('clanwars_games', 'name', array($this->get_gameID($intTeamID)));
 		}
 
 		/**
@@ -168,11 +210,15 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 		 * @param integer $intTeamID
 		 * @return multitype clanID
 		 */
-		 public function get_clanid($intTeamID){
+		 public function get_clanID($intTeamID){
 			if (isset($this->clanwars_teams[$intTeamID])){
-				return $this->clanwars_teams[$intTeamID]['clanid'];
+				return $this->clanwars_teams[$intTeamID]['clanID'];
 			}
 			return false;
+		}
+		
+		public function get_html_clanID($intTeamID){
+			return $this->pdh->geth('clanwars_clans', 'name', array($this->get_clanID($intTeamID)));
 		}
 
 	}//end class

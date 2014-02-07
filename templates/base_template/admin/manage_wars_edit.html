@@ -18,14 +18,22 @@
 	
 
 
+	<!-- BEGIN fieldsets -->
+	<!-- IF fieldsets.INFO -->
+	<div class="infobox infobox-large infobox-blue clearfix">
+		<i class="fa fa-info-circle fa-4x pull-left"></i> {fieldsets.INFO}
+	</div>
+	<!-- ENDIF -->
 	<fieldset class="settings">
+		<legend>{fieldsets.NAME}</legend>
 		<!-- BEGIN fields -->
 		<dl>
-			<dt><label>{fields.NAME}</label><br /><span>{fields.HELP}</span></dt>
-			<dd>{fields.FIELD}</dd>
+			<dt><label>{fieldsets.fields.NAME}</label><br /><span>{fieldsets.fields.HELP}</span></dt>
+			<dd>{fieldsets.fields.FIELD}</dd>
 		</dl>
 		<!-- END fields -->
 	</fieldset>
+	<!-- END fieldsets -->
 
 
 

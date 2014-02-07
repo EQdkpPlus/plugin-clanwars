@@ -80,9 +80,19 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 		/**
 		 * @return multitype: List of all IDs
 		 */				
-		public function get_id_list(){
+		public function get_id_list($blnOwnTeamsOnly=false){
 			if ($this->clanwars_teams === null) return array();
-			return array_keys($this->clanwars_teams);
+			
+			if ($blnOwnTeamsOnly){
+				$arrOut = array();
+				foreach($this->clanwars_teams as $key => $val){
+					if($this->pdh->get('clanwars_clans', 'own_clan', array($val['clanID']))) $arrOut[] = $key;
+				}
+				return $arrOut;
+				
+			} else {
+				return array_keys($this->clanwars_teams);
+			}	
 		}
 		
 		/**
@@ -215,6 +225,14 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 				return $this->clanwars_teams[$intTeamID]['clanID'];
 			}
 			return false;
+		}
+		
+		public function get_teamsForClan($intClanID){
+			$arrOut = array();
+			foreach($this->clanwars_teams as $key => $val){
+				if ($val['clanID'] == $intClanID) $arrOut[] = $key;
+			}
+			return $arrOut;
 		}
 		
 		public function get_html_clanID($intTeamID){

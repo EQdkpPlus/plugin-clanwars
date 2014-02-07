@@ -101,6 +101,7 @@ class clanwars extends plugin_generic
 	$this->add_pdh_write_module('clanwars_fightus');
 	$this->add_pdh_write_module('clanwars_games');
 	$this->add_pdh_write_module('clanwars_teams');
+	$this->add_pdh_write_module('clanwars_wars');
 	
     // -- Hooks -------------------------------------------
     #$this->add_hook('search', 'clanwars_search_hook', 'search');

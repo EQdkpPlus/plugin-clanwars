@@ -127,6 +127,7 @@ class clanwarsManageFightus extends page_generic
 				'allow_empty'	=> false,
 				'year_range'	=> '-1:+2',
 				'change_fields' => true,
+				'timepicker'	=> true,
 			),
 			'gameID' => array(
 				'type'		=> 'dropdown',

@@ -2,5 +2,5 @@
 - Search Hook
 - Frontend Module
 - Portal-Hook: Notifications bei neuen Fightus Anfragen
-- Kalendereintrag erstellen aus Fightus Eintrag (fertig machen)
 - Bei löschen von Teams, Clans etc: Benachrichtigung bzw. Abfrage, was mit dem Datensätzen passieren soll, ob die auch gelöscht werden sollen oder nicht.
+- Adminseiten fertig

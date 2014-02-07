@@ -50,7 +50,7 @@ class clanwarsManageWars extends page_generic
       'save' => array('process' => 'save', 'csrf' => true),
 	  'upd'	=> array('process' => 'update', 'csrf'=>false),
     );
-    parent::__construct(null, $handler, array('clanwars_wars', 'name'), null, 'selected_ids[]');
+    parent::__construct(null, $handler, array('clanwars_wars', 'delete_name'), null, 'selected_ids[]');
 
     $this->process();
   }
@@ -83,32 +83,80 @@ class clanwarsManageWars extends page_generic
 	$arrGames = $this->pdh->aget('clanwars_games', 'name', 0, array($this->pdh->get('clanwars_games', 'id_list', array(true))));
 	natcasesort($arrGames);
 	
+	$arrOwnTeams = $this->pdh->aget('clanwars_teams', 'name', 0, array($this->pdh->sort($this->pdh->get('clanwars_teams', 'id_list', array(true)), 'clanwars_teams', 'name', 'asc')));
+	natcasesort($arrOwnTeams);
+	
+	$arrCategories = $this->pdh->aget('clanwars_categories', 'name', 0, array($this->pdh->sort($this->pdh->get('clanwars_categories', 'id_list', array(true)), 'clanwars_categories', 'name', 'asc')));
+	$arrCategories[0] = "";
+	natcasesort($arrCategories);
+	
+	$arrTeams = array();
+	
 	return array(
-		'name' => array(
-			'type'		=> 'text',
-			'size'		=> 40,
+		'team' => array(
+			'clanID' => array(
+				'type'		=> 'dropdown',
+				'options'	=> $arrClans,
+				'ajax_reload' => array(array('teamID'), 'manage_wars.php'.$this->SID.'&ajax=true'),
+			),
+			'teamID' => array(
+				'type'		=> 'dropdown',
+				'options'	=> $arrTeams,
+			),
+			'players' => array(
+				'type'		=> 'textarea',
+				'row'		=> 5,
+				'cols'		=> 30,
+			),
+			'ownTeamID' => array(
+				'type'		=> 'dropdown',
+				'options'	=> $arrOwnTeams,
+			),
+			'ownPlayers' => array(
+				'type'		=> 'multiselect',
+				'options'	=> $arrUser,
+			),		
 		),
-		'description' => array(
-			'type'		=> 'bbcodeeditor',
-		),
-		'icon' => array(
-			'type'			=> 'imageuploader',
-			'imgpath'		=> $this->pfh->FolderPath('war_icons', 'clanwars'),
-			'returnFormat'	=> 'in_data',
-			'storageFolder' => $this->pfh->FolderPath('war_icons', 'clanwars', 'absolute'),
-		),
-		'members' => array(
-			'type'		=> 'multiselect',
-			'options'	=> $arrUser,
-		),
-		'clanID' => array(
-			'type'		=> 'dropdown',
-			'options'	=> $arrClans,
-		),	
-		'gameID' => array(
-			'type'		=> 'dropdown',
-			'options'	=> $arrGames,
-		),
+		'war'	=> array(
+			'date'	=> array(
+				'type'			=> 'datepicker',
+				'allow_empty'	=> false,
+				'year_range'	=> '-10:+5',
+				'change_fields' => true,
+				'timepicker'	=> true,
+			),
+			'gameID' => array(
+				'type'		=> 'dropdown',
+				'options'	=> $arrGames,
+			),
+			'categoryID' => array(
+				'type'		=> 'dropdown',
+				'options'	=> $arrCategories,
+			),
+			'playerCount' => array(
+				'type'		=> 'text',
+				'size'		=> 1,
+				'text2'		=> ' vs. '.new htext('playerCount2', array('size' => 1)),
+			),
+			'result' => array(
+				'type'		=> 'text',
+				'size'		=> 1,
+				'text2'		=> ' : '.new htext('result2', array('size' => 1)),
+			),
+			'website' => array(
+				'type'		=> 'text',
+				'size'		=> 40,
+			),
+			'ownReport' => array(
+				'type'		=> 'bbcodeeditor',
+			),
+			'report' => array(
+				'type'		=> 'bbcodeeditor',
+			),
+			'activateComments' => array(
+				'type'		=> 'radio',
+			),
+		)
 	);
   }
 
@@ -116,7 +164,10 @@ class clanwarsManageWars extends page_generic
 		$this->form->add_fields($this->fields());
 		$arrSave = $this->form->return_values();
 		
-		$intWarID = $this->in->get('t', 0);
+		$arrSave['result2'] = $this->in->get('result2', 0);
+		$arrSave['playerCount2'] = $this->in->get('playerCount2', 0);
+		
+		$intWarID = $this->in->get('w', 0);
 		
 		$arrResult = false;
 		if ($intWarID){
@@ -136,15 +187,14 @@ class clanwarsManageWars extends page_generic
   }
   
   public function update(){
-		$intWarID = $this->in->get('t', 0);
+		$intWarID = $this->in->get('w', 0);
 		$strWarName = ($intWarID) ? $this->pdh->get('clanwars_wars', 'name', array($intWarID)) : $this->user->lang('cw_add_war');
   
 		// initialize form class
 		$this->form->lang_prefix = 'cw_wars_';
-		$this->form->use_tabs = false;
-		$this->form->use_fieldsets = false;
+		$this->form->use_fieldsets = true;
 		
-		$this->form->add_fields($this->fields());
+		$this->form->add_fieldsets($this->fields());
 		
 		if ($intWarID){
 			$arrData = $this->pdh->get('clanwars_wars', 'data', array($intWarID));
@@ -173,6 +223,15 @@ class clanwarsManageWars extends page_generic
 			$this->core->messages($messages);
 		}
 		
+		if($this->in->get('ajax', false)) {
+			$options = array(
+				'options_only'	=> true,
+				'options' 		=> $this->pdh->aget('clanwars_teams', 'name', 0, array($this->pdh->get('clanwars_teams', 'teamsForClan', array($this->in->get('requestid', 0))))),
+			);
+			echo new hdropdown('teamID', $options);
+			exit;
+		}
+		
 		$intLimit = 50;
 		
 		$arrViewList = $this->pdh->get('clanwars_wars', 'id_list', array());
@@ -190,11 +249,11 @@ class clanwarsManageWars extends page_generic
 			'selectboxes_checkall'	=> true,
 			'table_presets' => array(
 				array('name' => 'clanwars_wars_actions', 'sort' => false, 'th_add' => 'width="20"', 'td_add' => ''),
-				array('name' => 'clanwars_wars_name', 'sort' => true, 'th_add' => '', 'td_add' => ''),
-				array('name' => 'clanwars_wars_icon', 'sort' => true, 'th_add' => '', 'td_add' => ''),
+				array('name' => 'clanwars_wars_date', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_wars_gameID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_wars_clanID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
-				array('name' => 'clanwars_wars_members', 'sort' => true, 'th_add' => '', 'td_add' => ''),
+				array('name' => 'clanwars_wars_result', 'sort' => true, 'th_add' => '', 'td_add' => ''),
+				array('name' => 'clanwars_wars_status', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 			),
 		
 		);

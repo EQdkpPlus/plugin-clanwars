@@ -120,6 +120,8 @@ $lang = array(
 	'cw_convert_to_war'			=> 'Match erstellen',
 	'cw_convert_to_calendarevent' => 'Kalendereintrag erstellen',
 	'cw_fightus_email_subject'	=> 'Statusänderung FightUs-Anfrage',
+	'cw_calendar_name'			=> 'Clanwar gegen %1$s',
+	'cw_calendar_note'			=> 'Spiel %1$s, Team %2$s',
 	
 	//Games
 	'cw_confirm_delete_games'	=> 'Bist Du sicher, dass Du diese Spiele %s löschen willst?',
@@ -152,6 +154,33 @@ $lang = array(
 	'cw_teams_f_members'		=> 'Mitglieder',
 	'cw_teams_f_clanID'			=> 'Clan',
 	'cw_teams_f_gameID'			=> 'Spiel',
+	
+	//Wars
+	'cw_confirm_delete_wars'	=> 'Bist Du sicher, dass Du diese Matches %s löschen willst?',
+	'cw_add_war'				=> 'Match hinzufügen',
+	'cw_delete_selected_wars'	=> 'Ausgewählte Matches löschen',
+	'cw_delete_wars_suc'		=> 'Die ausgewählten Matches wurden erfolgreich gelöscht',
+	'cw_delete_wars_no_suc'		=> 'Beim Löschen der ausgewählten Matches ist ein Fehler aufgetreten.',
+	'cw_save_wars_suc'			=> 'Das Spiel wurde erfolgreich gespeichert',
+	'cw_save_wars_no_suc'		=> 'Beim Speichern des Spiels ist ein Fehler aufgetreten.',
+	'cw_wars_fs_team'			=> 'Team-Informationen',
+	'cw_wars_fs_war'			=> 'Match-Informationen',
+	'cw_wars_f_clanID'			=> 'Gegnerischer Clan',
+	'cw_wars_f_teamID'			=> 'Gegnerisches Team',
+	'cw_wars_f_players'			=> 'Gegnerische Spieler',
+	'cw_wars_f_help_players'	=> 'Trage hier in jede Zeile einen gegnerischen Spieler ein, sofern sie von den Teammitgliedern abweichen',
+	'cw_wars_f_ownTeamID'		=> 'Eigenes Team',
+	'cw_wars_f_ownPlayers'		=> 'Eigene Spieler',
+	'cw_wars_f_help_ownPlayers'	=> 'Wähle die eigenen Spieler aus, sofern sie von den Teammitgliedern abweichen',
+	'cw_wars_f_date'			=> 'Datum',
+	'cw_wars_f_gameID'			=> 'Spiel',
+	'cw_wars_f_categoryID'		=> 'Kategorie',
+	'cw_wars_f_playerCount'		=> 'Spielerzahl (Eigene vs. Gegner)',
+	'cw_wars_f_result'			=> 'Ergebnis (Eigene zu Gegner-Runden)',
+	'cw_wars_f_website'			=> 'Website',
+	'cw_wars_f_ownReport'		=> 'Spielbericht',
+	'cw_wars_f_report'			=> 'Spielbericht des Gegners',
+	'cw_wars_f_activateComments'=> 'Kommentare zum Match zulassen',
  );
 
 ?>

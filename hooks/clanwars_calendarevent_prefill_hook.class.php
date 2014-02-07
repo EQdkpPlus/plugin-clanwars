@@ -42,9 +42,12 @@ if (!class_exists('clanwars_calendarevent_prefill_hook'))
 	{
 		if ($data['hookapp'] != 'clanwars') return $data;
 
-		$data['calendarevent'] = array(
-			'date'	=> $this->time->time,
-			'note'	=> 'Testnote',
+		$data['eventdata'] = array(
+			'name'	=> sprintf($this->user->lang('cw_calendar_name'),$this->pdh->get('clanwars_fightus', 'clanname', array($data['hookid']))),
+			'notes' => sprintf($this->user->lang('cw_calendar_note'), $this->pdh->geth('clanwars_fightus', 'gameID', array($data['hookid'])), $this->pdh->geth('clanwars_fightus', 'teamID', array($data['hookid']))),
+			'timestamp_start'	=> $this->pdh->get('clanwars_fightus', 'date', array($data['hookid'])),
+			'timestamp_end'		=> $this->pdh->get('clanwars_fightus', 'date', array($data['hookid'])) + (3600*2),
+			'extension'			=> array('calendarmode'		=> 'event',),
 		);
 		
 		return $data;

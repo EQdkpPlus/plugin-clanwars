@@ -24,10 +24,6 @@ define('PLUGIN', 'clanwars');
 $eqdkp_root_path = './../../../';
 include_once($eqdkp_root_path.'common.php');
 
-//TODO:
-// - Players for Team
-
-
 class clanwarsManageAwards extends page_generic
 {
   /**
@@ -77,7 +73,7 @@ class clanwarsManageAwards extends page_generic
   
   private function fields(){
   
-	$arrOwnTeams = $this->pdh->aget('clanwars_teams', 'name', 0, array($this->pdh->sort($this->pdh->get('clanwars_teams', 'id_list'), 'clanwars_teams', 'name', 'asc')));
+	$arrOwnTeams = $this->pdh->aget('clanwars_teams', 'name', 0, array($this->pdh->sort($this->pdh->get('clanwars_teams', 'id_list', array(true)), 'clanwars_teams', 'name', 'asc')));
 	$arrOwnTeams[0] = "";
 	natcasesort($arrOwnTeams);
 	$arrGames = $this->pdh->aget('clanwars_games', 'name', 0, array($this->pdh->get('clanwars_games', 'id_list', array(true))));

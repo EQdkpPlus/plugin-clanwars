@@ -35,12 +35,22 @@ if(!class_exists('pdh_w_clanwars_wars')) {
 			$arrData['icon'] = str_replace($this->pfh->FileLink('war_icons', 'clanwars', 'absolute'), '', $arrData['icon']);
 				
 			$arrSet = array(
-				'name'			=> $arrData['name'],
-				'description'	=> $arrData['description'],
-				'icon'			=> $arrData['icon'],
-				'members'		=> serialize($arrData['members']),
-				'gameID'		=> $arrData['gameID'],
-				'clanID'		=> $arrData['clanID'],
+				'id' => $arrData['id'],
+				'gameID' => $arrData['gameID'],
+				'categoryID' => $arrData['categoryID'],
+				'clanID' => $arrData['clanID'],
+				'teamID' => $arrData['teamID'],
+				'players' => serialize(explode("\n", $arrData['players'])),
+				'ownTeamID' => $arrData['ownTeamID'],
+				'ownPlayers' => $arrData['ownPlayers'],
+				'playerCount' => serialize(array($arrData['playerCount'], $arrData['playerCount2'])),
+				'date' => $arrData['date'],
+				//'status' => $arrData['status'],
+				'result' => serialize(array($arrData['result'], $arrData['result2'])),
+				'website' => $arrData['website'],
+				'report' => $arrData['report'],
+				'ownReport' => $arrData['ownReport'],
+				'activateComments' => $arrData['activateComments'],
 			);
 			
 			$objQuery = $this->db->prepare("INSERT INTO __clanwars_wars :p")->set($arrSet)->execute();

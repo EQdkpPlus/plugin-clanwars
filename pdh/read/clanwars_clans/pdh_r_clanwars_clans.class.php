@@ -262,6 +262,15 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			return false;
 		}
 		
+		public function get_clanIDforName($strClanname){
+			foreach($this->clanwars_clans as $key => $val){
+				if (stripos($val['name'], $strClanname) !== false){
+					return $key;
+				}
+			}
+			return false;
+		}
+		
 		private function init_countries(){
 			if (!$this->countries){
 				include($this->root_path.'core/country_states.php');

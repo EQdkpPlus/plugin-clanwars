@@ -1,6 +1,25 @@
 - Portalmodule
-- Search Hook
-- Frontend Module
-- Portal-Hook: Notifications bei neuen Fightus Anfragen
+	- Latest Awards
+	- Letztes Matches
+	- 
+- Hooks
+	- Search
+	- Portal: Notify bei FightUs Anfragen
+- Frontend Pageobjects
+	- Awards
+	- MatchList
+	- MatchView
+	- ClanView
+	- CategoryView
+	- TeamView
+	- GameView
+	- FightUs Anfrage
+- Admin
+	- Bei Löschen 
+	- Settings
+	- Shortcuts Anlegen von neuen Teams/Clans		
+
+
 - Bei löschen von Teams, Clans etc: Benachrichtigung bzw. Abfrage, was mit dem Datensätzen passieren soll, ob die auch gelöscht werden sollen oder nicht.
-- Adminseiten fertig
+- Admin-Settings-Seite
+- Shortcuts zum Anlegen von neuen Teams/Clans etc.

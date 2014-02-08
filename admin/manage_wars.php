@@ -161,12 +161,12 @@ class clanwarsManageWars extends page_generic
   }
 
   public function save() {
-		$this->form->add_fields($this->fields());
+		$this->form->add_fieldsets($this->fields());
 		$arrSave = $this->form->return_values();
 		
 		$arrSave['result2'] = $this->in->get('result2', 0);
 		$arrSave['playerCount2'] = $this->in->get('playerCount2', 0);
-		
+
 		$intWarID = $this->in->get('w', 0);
 		
 		$arrResult = false;
@@ -188,17 +188,37 @@ class clanwarsManageWars extends page_generic
   
   public function update(){
 		$intWarID = $this->in->get('w', 0);
-		$strWarName = ($intWarID) ? $this->pdh->get('clanwars_wars', 'name', array($intWarID)) : $this->user->lang('cw_add_war');
+		$strWarName = ($intWarID) ? $this->pdh->geth('clanwars_wars', 'date', array($intWarID)).', '.$this->pdh->geth('clanwars_wars', 'clanID', array($intWarID))  : $this->user->lang('cw_add_war');
   
 		// initialize form class
 		$this->form->lang_prefix = 'cw_wars_';
 		$this->form->use_fieldsets = true;
 		
-		$this->form->add_fieldsets($this->fields());
-		
-		if ($intWarID){
-			$arrData = $this->pdh->get('clanwars_wars', 'data', array($intWarID));
+		$arrFields = $this->fields();
+		if($intWarID){
+			$arrData = $this->pdh->get('clanwars_wars', 'data', array($intWarID));			
+			$arrFields['war']['playerCount']['text2'] = ' vs. '.new htext('playerCount2', array('size' => 1, 'value' => $arrData['playerCount'][1]));
+			$arrData['playerCount'] = $arrData['playerCount'][0];
+			
+			$arrFields['war']['result']['text2'] = ' vs. '.new htext('result2', array('size' => 1, 'value' => $arrData['result'][1]));
+			$arrData['result'] = $arrData['result'][0];
+			
+			$arrData['players'] = implode("\r\n", $arrData['players']);
+			
+		} elseif($this->in->get('convert_fightus')) {
+			$intFightusID = $this->in->get('convert_fightus');
+			$arrData = array(
+				'date'		=> $this->pdh->get('clanwars_fightus', 'date', array($intFightusID)),
+				'gameID'	=> $this->pdh->get('clanwars_fightus', 'gameID', array($intFightusID)),
+				'ownTeamID' => $this->pdh->get('clanwars_fightus', 'teamID', array($intFightusID)),
+				//TODO: clanID setzen, aus clanname bzw. shortname auslesen
+			);
+			$intClanID = $this->pdh->get('clanwars_clans', 'clanIDforName', array($this->pdh->get('clanwars_fightus', 'clanname', array($intFightusID))));
+			if ($intClanID) $arrData['clanID'] = $intClanID;
 		} else $arrData = array();
+		
+		$this->form->add_fieldsets($arrFields);
+		
 		
 		// Output the form, pass values in
 		$this->form->output($arrData);
@@ -252,8 +272,10 @@ class clanwarsManageWars extends page_generic
 				array('name' => 'clanwars_wars_date', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_wars_gameID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_wars_clanID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
+				array('name' => 'clanwars_wars_teamID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_wars_result', 'sort' => true, 'th_add' => '', 'td_add' => ''),
-				array('name' => 'clanwars_wars_status', 'sort' => true, 'th_add' => '', 'td_add' => ''),
+				array('name' => 'clanwars_wars_ownTeamID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
+				array('name' => 'clanwars_wars_categoryID', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 			),
 		
 		);

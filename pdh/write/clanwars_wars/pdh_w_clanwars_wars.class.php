@@ -33,19 +33,19 @@ if(!class_exists('pdh_w_clanwars_wars')) {
 		
 		public function add_war($arrData) {
 			$arrData['icon'] = str_replace($this->pfh->FileLink('war_icons', 'clanwars', 'absolute'), '', $arrData['icon']);
+			
 				
 			$arrSet = array(
-				'id' => $arrData['id'],
 				'gameID' => $arrData['gameID'],
 				'categoryID' => $arrData['categoryID'],
 				'clanID' => $arrData['clanID'],
 				'teamID' => $arrData['teamID'],
-				'players' => serialize(explode("\n", $arrData['players'])),
+				'players' => serialize(array_map('trim',explode("\n", $arrData['players']))),
 				'ownTeamID' => $arrData['ownTeamID'],
 				'ownPlayers' => $arrData['ownPlayers'],
 				'playerCount' => serialize(array($arrData['playerCount'], $arrData['playerCount2'])),
 				'date' => $arrData['date'],
-				//'status' => $arrData['status'],
+				'status' => 0,
 				'result' => serialize(array($arrData['result'], $arrData['result2'])),
 				'website' => $arrData['website'],
 				'report' => $arrData['report'],
@@ -67,12 +67,21 @@ if(!class_exists('pdh_w_clanwars_wars')) {
 			$arrData['icon'] = str_replace($this->pfh->FileLink('war_icons', 'clanwars', 'absolute'), '', $arrData['icon']);
 			
 			$arrSet = array(
-				'name'			=> $arrData['name'],
-				'description'	=> $arrData['description'],
-				'icon'			=> $arrData['icon'],
-				'members'		=> serialize($arrData['members']),
-				'gameID'		=> $arrData['gameID'],
-				'clanID'		=> $arrData['clanID'],
+				'gameID' => $arrData['gameID'],
+				'categoryID' => $arrData['categoryID'],
+				'clanID' => $arrData['clanID'],
+				'teamID' => $arrData['teamID'],
+				'players' => serialize(array_map('trim',explode("\n", $arrData['players']))),
+				'ownTeamID' => $arrData['ownTeamID'],
+				'ownPlayers' => $arrData['ownPlayers'],
+				'playerCount' => serialize(array($arrData['playerCount'], $arrData['playerCount2'])),
+				'date' => $arrData['date'],
+				'status' => 0,
+				'result' => serialize(array($arrData['result'], $arrData['result2'])),
+				'website' => $arrData['website'],
+				'report' => $arrData['report'],
+				'ownReport' => $arrData['ownReport'],
+				'activateComments' => $arrData['activateComments'],
 			);
 			
 			$objQuery = $this->db->prepare("UPDATE __clanwars_wars :p WHERE id =?")->set($arrSet)->execute($id);

@@ -27,6 +27,7 @@ $module_lang = array(
 	'gameID'		=> 'Spiel',
 	'clanID'		=> 'Clan',
 	'status'		=> 'Status',
+	'categoryID'	=> 'Kategorie'
 );
 
 ?>

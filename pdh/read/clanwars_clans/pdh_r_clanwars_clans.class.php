@@ -164,9 +164,9 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			if ($country && strlen($country)){
 				$this->init_countries();
 				if (!$blnWithCountryName){
-					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.png" alt="'.$country.'" class="coretip" data-coretip="'.ucfirst(strtolower($this->countries[$country])).'" />';
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.svg" alt="'.$country.'" class="coretip" data-coretip="'.ucfirst(strtolower($this->countries[$country])).'" />';
 				} else {
-					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.png" alt="'.$country.'" /> '.ucfirst(strtolower($this->countries[$country]));
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.svg" alt="'.$country.'" /> '.ucfirst(strtolower($this->countries[$country]));
 				}
 			}
 			return '';

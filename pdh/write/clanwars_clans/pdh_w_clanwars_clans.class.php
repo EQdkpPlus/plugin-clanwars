@@ -22,10 +22,6 @@ if(!defined('EQDKP_INC')) {
 
 if(!class_exists('pdh_w_clanwars_clans')) {
 	class pdh_w_clanwars_clans extends pdh_w_generic {
-		public static function __shortcuts() {
-		$shortcuts = array();
-		return array_merge(parent::$shortcuts, $shortcuts);
-	}
 
 		public function __construct() {
 			parent::__construct();

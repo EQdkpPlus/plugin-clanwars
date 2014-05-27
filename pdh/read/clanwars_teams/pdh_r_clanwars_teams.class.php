@@ -22,10 +22,6 @@ if ( !defined('EQDKP_INC') ){
 				
 if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 	class pdh_r_clanwars_teams extends pdh_r_generic{
-		public static function __shortcuts() {
-		$shortcuts = array();
-		return array_merge(parent::$shortcuts, $shortcuts);
-	}				
 	
 	public $default_lang = 'english';
 	public $clanwars_teams = null;

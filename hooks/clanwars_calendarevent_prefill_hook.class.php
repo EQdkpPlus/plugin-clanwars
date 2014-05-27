@@ -29,15 +29,13 @@ if (!class_exists('clanwars_calendarevent_prefill_hook'))
 {
   class clanwars_calendarevent_prefill_hook extends gen_class
   {
-    /* List of dependencies */
-    public static $shortcuts = array();
 
 	/**
-    * comments_save
-    * Do the hook 'comments_save'
-    *
-    * @return array
-    */
+	* comments_save
+	* Do the hook 'comments_save'
+	*
+	* @return array
+	*/
 	public function calendarevent_prefill($data)
 	{
 		if ($data['hookapp'] != 'clanwars') return $data;

@@ -35,8 +35,8 @@ if(!class_exists('pdh_w_clanwars_teams')) {
 				'description'	=> $arrData['description'],
 				'icon'			=> $arrData['icon'],
 				'members'		=> serialize($arrData['members']),
-				'gameID'		=> $arrData['gameID'],
-				'clanID'		=> $arrData['clanID'],
+				'gameID'		=> (int)$arrData['gameID'],
+				'clanID'		=> (int)$arrData['clanID'],
 			);
 			
 			$objQuery = $this->db->prepare("INSERT INTO __clanwars_teams :p")->set($arrSet)->execute();
@@ -57,8 +57,8 @@ if(!class_exists('pdh_w_clanwars_teams')) {
 				'description'	=> $arrData['description'],
 				'icon'			=> $arrData['icon'],
 				'members'		=> serialize($arrData['members']),
-				'gameID'		=> $arrData['gameID'],
-				'clanID'		=> $arrData['clanID'],
+				'gameID'		=> (int)$arrData['gameID'],
+				'clanID'		=> (int)$arrData['clanID'],
 			);
 			
 			$objQuery = $this->db->prepare("UPDATE __clanwars_teams :p WHERE id =?")->set($arrSet)->execute($id);

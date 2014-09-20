@@ -80,7 +80,7 @@ class clanwarsManageTeams extends page_generic
 	$arrClans = $this->pdh->aget('clanwars_clans', 'name', 0, array($this->pdh->sort($this->pdh->get('clanwars_clans', 'id_list', array()), 'clanwars_clans', 'name', 'asc')));
 	natcasesort($arrClans);
 	
-	$arrGames = $this->pdh->aget('clanwars_games', 'name', 0, array($this->pdh->get('clanwars_games', 'id_list', array(true))));
+	$arrGames = $this->pdh->aget('clanwars_games', 'name', 0, array($this->pdh->get('clanwars_games', 'id_list', array())));
 	natcasesort($arrGames);
 	
 	return array(

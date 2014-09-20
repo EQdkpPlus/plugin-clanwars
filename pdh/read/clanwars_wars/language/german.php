@@ -27,7 +27,10 @@ $module_lang = array(
 	'gameID'		=> 'Spiel',
 	'clanID'		=> 'Clan',
 	'status'		=> 'Status',
-	'categoryID'	=> 'Kategorie'
+	'categoryID'	=> 'Kategorie',
+	'opponent'		=> 'Gegner',
+	'ownTeamID'		=> 'Eigenes Team',
+	'teamID'		=> 'Clanteam',
 );
 
 ?>

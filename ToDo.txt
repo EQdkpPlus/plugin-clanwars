@@ -5,6 +5,7 @@
 - Hooks
 	- Search
 	- Portal: Notify bei FightUs Anfragen
+	
 - Frontend Pageobjects
 	- Awards
 	- MatchList
@@ -15,11 +16,11 @@
 	- GameView
 	- FightUs Anfrage
 - Admin
-	- Bei Löschen 
+	- Bei Lï¿½schen 
 	- Settings
-	- Shortcuts Anlegen von neuen Teams/Clans		
+	- Shortcuts Anlegen von neuen Teams/Clans, mit Ajax holen
 
 
-- Bei löschen von Teams, Clans etc: Benachrichtigung bzw. Abfrage, was mit dem Datensätzen passieren soll, ob die auch gelöscht werden sollen oder nicht.
+- Bei lï¿½schen von Teams, Clans etc: Benachrichtigung bzw. Abfrage, was mit dem Datensï¿½tzen passieren soll, ob die auch gelï¿½scht werden sollen oder nicht.
 - Admin-Settings-Seite
 - Shortcuts zum Anlegen von neuen Teams/Clans etc.

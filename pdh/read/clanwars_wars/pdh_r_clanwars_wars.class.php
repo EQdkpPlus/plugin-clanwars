@@ -32,22 +32,23 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			
 	public $presets = array(
 		'clanwars_wars_id' => array('id', array('%intWarID%'), array()),
-		'clanwars_wars_gameID' => array('gameID', array('%intWarID%'), array()),
-		'clanwars_wars_categoryID' => array('categoryID', array('%intWarID%'), array()),
+		'clanwars_wars_gameID' => array('gameID', array('%intWarID%', '%link_fe%'), array()),
+		'clanwars_wars_categoryID' => array('categoryID', array('%intWarID%', '%link_fe%'), array()),
 		'clanwars_wars_clanID' => array('clanID', array('%intWarID%'), array()),
 		'clanwars_wars_teamID' => array('teamID', array('%intWarID%'), array()),
 		'clanwars_wars_players' => array('players', array('%intWarID%'), array()),
-		'clanwars_wars_ownTeamID' => array('ownTeamID', array('%intWarID%'), array()),
+		'clanwars_wars_ownTeamID' => array('ownTeamID', array('%intWarID%', '%link_fe%'), array()),
 		'clanwars_wars_ownPlayers' => array('ownPlayers', array('%intWarID%'), array()),
 		'clanwars_wars_playerCount' => array('playerCount', array('%intWarID%'), array()),
 		'clanwars_wars_date' => array('date', array('%intWarID%'), array()),
 		'clanwars_wars_status' => array('status', array('%intWarID%'), array()),
-		'clanwars_wars_result' => array('result', array('%intWarID%'), array()),
+		'clanwars_wars_result' => array('result', array('%intWarID%', '%link_fe%'), array()),
 		'clanwars_wars_website' => array('website', array('%intWarID%'), array()),
 		'clanwars_wars_report' => array('report', array('%intWarID%'), array()),
 		'clanwars_wars_ownReport' => array('ownReport', array('%intWarID%'), array()),
 		'clanwars_wars_activateComments' => array('activateComments', array('%intWarID%'), array()),
 		'clanwars_wars_actions' => array('actions', array('%intWarID%', '%link_url%', '%link_url_suffix%'), array()),
+		'clanwars_wars_opponent' => array('opponent', array('%intWarID%'), array()),
 	);
 				
 	public function reset(){
@@ -140,9 +141,14 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			return false;
 		}
 		
-		public function get_html_gameID($intWarID){
+		public function get_html_gameID($intWarID, $blnLinkFrontend=false){
 			$intGameID = $this->get_gameID($intWarID);
 			$strGameName = $this->pdh->get('clanwars_games', 'name', array($intGameID));
+			
+			if ($blnLinkFrontend){
+				return '<a href="'.$this->routing->build(array('clanwars', 'Game'), $strGameName.', g'.$intGameID).'">'.$strGameName.'</a>';
+			}
+			
 			return $strGameName;
 		}
 
@@ -158,9 +164,13 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			return false;
 		}
 		
-		public function get_html_categoryID($intWarID){
+		public function get_html_categoryID($intWarID, $blnLinkFrontend=false){
 			$intTeamID = $this->get_categoryID($intWarID);
 			$strTeamname = $this->pdh->get('clanwars_categories', 'name', array($intTeamID));
+			
+			if ($blnLinkFrontend){
+				return '<a href="'.$this->routing->build(array('clanwars', 'Category'), $strTeamname.', cat'.$intTeamID).'">'.$strTeamname.'</a>';	
+			}
 			return $strTeamname;
 		}
 
@@ -181,6 +191,13 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			$strTeamname = $this->pdh->get('clanwars_clans', 'name', array($intTeamID));
 			return $strTeamname;
 		}
+		
+		public function get_clanID_decorated($intWarID){
+			$strOut = '<a href="'.$this->routing->build(array('clanwars', 'Clan'), $this->get_html_clanID($intWarID).', c'.$this->get_clanID($intWarID)).'">'.$this->get_html_clanID($intWarID).'</a>';
+			
+
+			return $strOut;
+		}
 
 		/**
 		 * Returns teamID for $intWarID				
@@ -194,9 +211,14 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			return false;
 		}
 		
-		public function get_html_teamID($intWarID){
+		public function get_html_teamID($intWarID, $blnLinkFrontend=false){
 			$intTeamID = $this->get_teamID($intWarID);
 			$strTeamname = $this->pdh->get('clanwars_teams', 'name', array($intTeamID));
+			
+			if ($blnLinkFrontend){
+				return '<a href="'.$this->routing->build(array('clanwars', 'Team'), $strTeamname.', t'.$intTeamID).'">'.$strTeamname.'</a>';
+			}
+			
 			return $strTeamname;
 		}
 
@@ -224,9 +246,13 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			return false;
 		}
 		
-		public function get_html_ownTeamID($intWarID){
+		public function get_html_ownTeamID($intWarID, $blnLinkFrontend=false){
 			$intTeamID = $this->get_ownTeamID($intWarID);
 			$strTeamname = $this->pdh->get('clanwars_teams', 'name', array($intTeamID));
+			
+			if ($blnLinkFrontend){
+				return '<a href="'.$this->routing->build(array('clanwars', 'Team'), $strTeamname.', t'.$intTeamID).'">'.$strTeamname.'</a>';	
+			}
 			return $strTeamname;
 		}
 
@@ -252,6 +278,11 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 				return $this->clanwars_wars[$intWarID]['playerCount'];
 			}
 			return false;
+		}
+		
+		public function get_html_playerCount($intWarID){
+			$arrPlayerCount = $this->get_playerCount($intWarID);
+			return $arrPlayerCount[0].' '.$this->user->lang('cw_versus').' '.$arrPlayerCount[1];
 		}
 
 		/**
@@ -294,13 +325,33 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			return false;
 		}
 		
-		public function get_html_result($intWarID){
+		public function get_html_result($intWarID, $blnLinkFrontend=false){
 			$arrResult = $this->get_result($intWarID);
 			if ($arrResult[0] == $arrResult[1]) $class = "neutral";
 			if ($arrResult[0] > $arrResult[1]) $class = "positive";
 			if ($arrResult[0] < $arrResult[1]) $class = "negative";
 			
+			if ($blnLinkFrontend){
+				$strMatchName = $this->get_html_teamID($intWarID);
+				
+				return '<a href="'.$this->routing->build(array('clanwars', 'Match'), $strMatchName.', m'.$intWarID).'"><span class="'.$class.'">'.$arrResult[0].' : '.$arrResult[1].'</span></a>';
+			}
+			
 			return '<span class="'.$class.'">'.$arrResult[0].' : '.$arrResult[1].'</span>';
+		}
+		
+		
+		
+		/**
+		 * 1 = win, 0 = equal, -1 loss
+		 */
+		public function get_win($intWarID){
+			$arrResult = $this->get_result($intWarID);
+			if ((int)$arrResult[0] == (int)$arrResult[1]) return 0;
+			if ((int)$arrResult[0] > (int)$arrResult[1]) return 1;
+			if ((int)$arrResult[0] < (int)$arrResult[1]) return -1;
+			
+			return 0;
 		}
 
 		/**
@@ -314,6 +365,14 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_website($intWarID){
+			$strLink = $this->get_website($intWarID);
+			if (strlen($strLink)){
+				return '<a href="'.$strLink.'" rel="nofollow">'.$strLink.'</a>';
+			}
+			return '';
+		}
 
 		/**
 		 * Returns report for $intWarID				
@@ -325,6 +384,14 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 				return $this->clanwars_wars[$intWarID]['report'];
 			}
 			return false;
+		}
+		
+		public function get_html_report($intWarID){
+			$strReport = $this->get_report($intWarID);
+			if (strlen($strReport)){
+				return $this->bbcode->toHTML($strReport);
+			}
+			return '';
 		}
 
 		/**
@@ -338,6 +405,14 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_ownReport($intWarID){
+			$strReport = $this->get_ownReport($intWarID);
+			if (strlen($strReport)){
+				return $this->bbcode->toHTML($strReport);
+			}
+			return '';
+		}
 
 		/**
 		 * Returns activateComments for $intWarID				
@@ -349,6 +424,49 @@ if ( !class_exists( "pdh_r_clanwars_wars" ) ) {
 				return $this->clanwars_wars[$intWarID]['activateComments'];
 			}
 			return false;
+		}
+		
+		public function get_html_opponent($intWarID){
+			$strTeamname = $this->get_html_teamID($intWarID);
+			$strOut = '<a href="'.$this->routing->build(array('clanwars', 'Team'), $strTeamname.', t'.$this->get_teamID($intWarID)).'">'.$strTeamname.'</a>';
+			$strOut .= ' @ <a href="'.$this->routing->build(array('clanwars', 'Clan'), $this->get_html_clanID($intWarID).', c'.$this->get_clanID($intWarID)).'">'.$this->get_html_clanID($intWarID).'</a>';
+			return $strOut;
+		}
+		
+		public function get_wars_for_clan($intClanID){
+			$arrWars = $this->get_id_list();
+			$arrOut = array();
+			foreach($arrWars as $intWarID){
+				if ($this->get_clanID($intWarID) == $intClanID) $arrOut[] = $intWarID; 
+			}
+			return $arrOut;
+		}
+		
+		public function get_wars_for_team($intTeamID){
+			$arrWars = $this->get_id_list();
+			$arrOut = array();
+			foreach($arrWars as $intWarID){
+				if ($this->get_teamID($intWarID) == $intTeamID) $arrOut[] = $intWarID;
+			}
+			return $arrOut;
+		}
+		
+		public function get_wars_for_category($intCategoryID){
+			$arrWars = $this->get_id_list();
+			$arrOut = array();
+			foreach($arrWars as $intWarID){
+				if ($this->get_categoryID($intWarID) == $intCategoryID) $arrOut[] = $intWarID;
+			}
+			return $arrOut;
+		}
+		
+		public function get_wars_for_game($intGameID){
+			$arrWars = $this->get_id_list();
+			$arrOut = array();
+			foreach($arrWars as $intWarID){
+				if ($this->get_gameID($intWarID) == $intGameID) $arrOut[] = $intWarID;
+			}
+			return $arrOut;
 		}
 
 	}//end class

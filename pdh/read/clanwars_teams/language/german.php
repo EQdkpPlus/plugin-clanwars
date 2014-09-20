@@ -27,6 +27,7 @@ $module_lang = array(
 	'gameID'		=> 'Spiel',
 	'clanID'		=> 'Clan',
 	'members'		=> 'Mitglieder',
+	'name_decorated'=> 'Name',
 );
 
 ?>

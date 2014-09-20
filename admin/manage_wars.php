@@ -211,7 +211,6 @@ class clanwarsManageWars extends page_generic
 				'date'		=> $this->pdh->get('clanwars_fightus', 'date', array($intFightusID)),
 				'gameID'	=> $this->pdh->get('clanwars_fightus', 'gameID', array($intFightusID)),
 				'ownTeamID' => $this->pdh->get('clanwars_fightus', 'teamID', array($intFightusID)),
-				//TODO: clanID setzen, aus clanname bzw. shortname auslesen
 			);
 			$intClanID = $this->pdh->get('clanwars_clans', 'clanIDforName', array($this->pdh->get('clanwars_fightus', 'clanname', array($intFightusID))));
 			if ($intClanID) $arrData['clanID'] = $intClanID;

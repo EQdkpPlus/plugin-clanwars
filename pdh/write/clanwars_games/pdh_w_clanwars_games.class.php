@@ -74,16 +74,31 @@ if(!class_exists('pdh_w_clanwars_games')) {
 			return false;
 		}
 
-		public function delete_game($intAwardID) {
+		public function delete_game($intGameID) {
 			
-			$objQuery = $this->db->prepare("DELETE FROM __clanwars_games WHERE id = ?;")->execute($intAwardID);
+			$objQuery = $this->db->prepare("DELETE FROM __clanwars_games WHERE id = ?;")->execute($intGameID);
 
 			if($objQuery) {
-				$this->pdh->enqueue_hook('clanwars_games_update', array($intAwardID));
+				$this->pdh->enqueue_hook('clanwars_games_update', array($intGameID));
 				return true;
 			}
 
 			return false;
+		}
+		
+		
+		public function enable($intGameID){
+			$arrSet = array('enabled' => 1);
+			$objQuery = $this->db->prepare("UPDATE __clanwars_games :p WHERE id =?")->set($arrSet)->execute($intGameID);
+			
+			$this->pdh->enqueue_hook('clanwars_games_update');
+		}
+		
+		public function disable($intGameID){
+			$arrSet = array('enabled' => 0);
+			$objQuery = $this->db->prepare("UPDATE __clanwars_games :p WHERE id =?")->set($arrSet)->execute($intGameID);
+				
+			$this->pdh->enqueue_hook('clanwars_games_update');
 		}
 		
 		public function reset() {

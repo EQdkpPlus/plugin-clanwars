@@ -35,11 +35,12 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 		'clanwars_awards_event' => array('event', array('%intAwardID%'), array()),
 		'clanwars_awards_date' => array('date', array('%intAwardID%'), array()),
 		'clanwars_awards_rank' => array('rank', array('%intAwardID%'), array()),
-		'clanwars_awards_gameID' => array('gameID', array('%intAwardID%'), array()),
+		'clanwars_awards_gameID' => array('gameID', array('%intAwardID%', '%link_fe%'), array()),
 		'clanwars_awards_teamID' => array('teamID', array('%intAwardID%'), array()),
 		'clanwars_awards_userID' => array('userID', array('%intAwardID%'), array()),
 		'clanwars_awards_website' => array('website', array('%intAwardID%'), array()),
 		'clanwars_awards_actions' => array('actions', array('%intAwardID%', '%link_url%', '%link_url_suffix%'), array()),
+		'clanwars_awards_winner' => array('winner', array('%intAwardID%'), array()),	
 	);
 				
 	public function reset(){
@@ -184,9 +185,14 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 			return $intGameID;
 		}
 		
-		public function get_html_gameID($intAwardID){
+		public function get_html_gameID($intAwardID, $blnLinkFrontend=false){
 			$intGameID = $this->get_gameID($intAwardID);
 			$strGameName = $this->pdh->get('clanwars_games', 'name', array($intGameID));
+			
+			if ($blnLinkFrontend){
+				return '<a href="'.$this->routing->build(array('clanwars', 'Game'), $strGameName.', g'.$intGameID).'">'.$strGameName.'</a>';
+			}
+			
 			return $strGameName;
 		}
 
@@ -240,6 +246,25 @@ if ( !class_exists( "pdh_r_clanwars_awards" ) ) {
 		
 		public function get_delete_name($intAwardID){
 			return $this->get_event($intAwardID).', '.$this->get_html_date($intAwardID);
+		}
+		
+		public function get_winner($intAwardID){
+			$intTeam = $this->get_teamID($intAwardID);
+			$intUser = $this->get_userID($intAwardID);
+			
+			$strOut = "";
+			if ($intTeam){
+				$strTeam = $this->get_html_teamID($intAwardID);
+				$strOut .= '<a href="'.$this->routing->build(array('clanwars', 'Team'), $strTeam.', t'.$intTeam).'">'.$strTeam.'</a>';		
+			}
+			
+			if ($intUser){
+				$strUser = $this->get_html_userID($intAwardID);
+				if ($intTeam) $strOut .= " ";
+				$strOut .= '<a href="'.$this->routing->build(array('clanwars', 'Player'), $strUser.', p'.$strUser).'">'.$strUser.'</a>';		
+			}
+			
+			return $strOut;
 		}
 
 	}//end class

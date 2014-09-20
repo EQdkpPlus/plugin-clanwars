@@ -49,10 +49,26 @@ class clanwarsManageGames extends page_generic
     $handler = array(
       'save' => array('process' => 'save', 'csrf' => true),
 	  'upd'	=> array('process' => 'update', 'csrf'=>false),
+      'enable' => array('process' => 'enable'),
+      'disable' => array('process' => 'disable'),
     );
     parent::__construct(null, $handler, array('clanwars_games', 'name'), null, 'selected_ids[]');
 
     $this->process();
+  }
+  
+  public function enable(){
+  	$intGameID = $this->in->get('enable', 0);
+  	$this->pdh->put('clanwars_games', 'enable', array($intGameID));
+  	
+  	$this->pdh->process_hook_queue();
+  }
+  
+  public function disable(){
+  	$intGameID = $this->in->get('disable', 0);
+  	$this->pdh->put('clanwars_games', 'disable', array($intGameID));
+  	
+  	$this->pdh->process_hook_queue();
   }
 
   public function delete(){
@@ -197,11 +213,12 @@ class clanwarsManageGames extends page_generic
 			'show_numbers' => false,
 			'show_select_boxes' => true,
 			'show_detail_twink' => false,
-			'table_sort_col' => 1,
-			'table_sort_dir' => 'desc',
+			'table_sort_col' => 2,
+			'table_sort_dir' => 'asc',
 			'selectboxes_checkall'	=> true,
 			'table_presets' => array(
 				array('name' => 'clanwars_games_actions', 'sort' => false, 'th_add' => 'width="20"', 'td_add' => ''),
+				array('name' => 'clanwars_games_enabled', 'sort' => false, 'th_add' => 'width="20"', 'td_add' => ''),
 				array('name' => 'clanwars_games_name', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_games_version', 'sort' => true, 'th_add' => '', 'td_add' => ''),
 				array('name' => 'clanwars_games_icon', 'sort' => true, 'th_add' => '', 'td_add' => ''),

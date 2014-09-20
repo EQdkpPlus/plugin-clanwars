@@ -28,6 +28,7 @@ $module_lang = array(
 	'gameID'		=> 'Spiel',
 	'teamID'		=> 'Team',
 	'userID'		=> 'Spieler',
+	'winner'		=> 'Team/Spieler',
 );
 
 ?>

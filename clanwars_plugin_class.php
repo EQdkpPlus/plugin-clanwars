@@ -33,6 +33,8 @@ class clanwars extends plugin_generic
   public $build      = '';
   public $copyright  = 'GodMod';
   public $vstatus    = 'Beta';
+  
+  protected static $apiLevel = 20;
 
   /**
     * Constructor
@@ -99,6 +101,8 @@ class clanwars extends plugin_generic
 	$this->add_hook('calendarevent_prefill', 'clanwars_calendarevent_prefill_hook', 'calendarevent_prefill');
     
     //Routing
+    $this->routing->addRoute('Clanwars', 'clanwars', 'plugins/clanwars/pageobjects');
+	
 	#$this->routing->addRoute('WriteApplication', 'addrequest', 'plugins/clanwars/page_objects');
 	#$this->routing->addRoute('ListApplications', 'listrequests', 'plugins/clanwars/page_objects');
 	#$this->routing->addRoute('ViewApplication', 'viewrequest', 'plugins/clanwars/page_objects');

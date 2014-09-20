@@ -1,0 +1,67 @@
+<!-- IF S_NORMAL_HEADER -->
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="{EQDKP_CONTROLLER_PATH}{SID}" title="{L_home}"><i class="fa fa-home"></i></a></li>
+		<li class="current"><a>{L_cw_clan}: {CLANNAME}</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+
+<!-- ENDIF -->
+<style>
+.clanhead {
+	font-size: 24px;
+	font-weight: bold;
+	margin-top: 8px;
+} 	
+
+.clansub {
+	margin-top: 4px;
+}
+</style>
+
+<table width="100%" class="borderless clanresultContainer">
+	<tr>
+		<td width="20" nowrap="nowrap">
+			{CLANLOGO}
+		</td>
+		<td>
+			<div class="clanhead">{CLANNAME} {CLANCOUNTRY}</div>
+			<div class="clansub">{L_cw_est} {CLAN_EST}{CLAN_WEB}</div>
+		</td>
+	</tr>
+</table>
+<br /><br />
+<h2>{L_cw_teams}</h2>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="2" class="hptt colorswitch scrollable-x">
+	{TEAMS_LIST}
+</table>
+<br /><br />
+<h2>{L_cw_matches}</h2>
+<table width="100%" border="0" cellspacing="1" cellpadding="2" class="hptt colorswitch scrollable-x">
+	{MATCHES_LIST}
+</table>
+<div class="center pagination_wrapper">
+	{PAGINATION}
+</div>
+<br /><br />
+<h2>{L_cw_statistics}</h2>
+<div class="infobox infobox-large infobox-blue clearfix">
+	<i class="fa fa-info-circle fa-4x pull-left"></i> {L_cw_statistics_info}
+</div>
+<h3>{L_cw_teams}</h3>
+<!-- BEGIN teamchart_row -->
+<div style="width: 33%" class="floatLeft">
+{teamchart_row.CHART}
+</div>
+<!-- END teamchart_row -->
+
+<div class="clear"></div>
+<h3>{L_cw_games}</h3>
+<!-- BEGIN gamechart_row -->
+<div style="width: 33%" class="floatLeft">
+{gamechart_row.CHART}
+</div>
+<div class="clear"></div>
+<!-- END gamechart_row -->

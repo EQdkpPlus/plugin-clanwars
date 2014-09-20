@@ -101,6 +101,7 @@ DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 	`company` VARCHAR(255) NULL DEFAULT NULL,
 	`website` TEXT NULL,
 	`usk` INT(11) NULL DEFAULT '0',
+  	`enabled` INT(1) NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
 )
 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

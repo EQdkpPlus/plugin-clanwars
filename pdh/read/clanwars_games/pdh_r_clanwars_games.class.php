@@ -33,6 +33,7 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 	public $presets = array(
 		'clanwars_games_id' => array('id', array('%intGameID%'), array()),
 		'clanwars_games_name' => array('name', array('%intGameID%'), array()),
+		'clanwars_games_enabled' => array('enabled', array('%intGameID%'), array()),
 		'clanwars_games_version' => array('version', array('%intGameID%'), array()),
 		'clanwars_games_icon' => array('icon', array('%intGameID%'), array()),
 		'clanwars_games_pubdate' => array('pubdate', array('%intGameID%'), array()),
@@ -69,6 +70,7 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 						'company'		=> $drow['company'],
 						'website'		=> $drow['website'],
 						'usk'			=> (int)$drow['usk'],
+						'enabled'		=> (int)$drow['enabled'],
 					);
 				}
 				
@@ -80,9 +82,18 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 		/**
 		 * @return multitype: List of all IDs
 		 */				
-		public function get_id_list(){
+		public function get_id_list($blnEnabledOnly = false){
 			if ($this->clanwars_games === null) return array();
-			return array_keys($this->clanwars_games);
+			
+			if ($blnEnabledOnly){
+				$arrOut = array();
+				foreach(array_keys($this->clanwars_games) as $gameID){
+					if ($this->get_enabled($gameID)) $arrOut[] = $gameID;
+				}
+				return $arrOut;
+				
+			} else 
+				return array_keys($this->clanwars_games);
 		}
 		
 		/**
@@ -233,6 +244,67 @@ if ( !class_exists( "pdh_r_clanwars_games" ) ) {
 				return $this->clanwars_games[$intGameID]['usk'];
 			}
 			return false;
+		}
+		
+		/**
+		 * Returns enabled for $intGameID
+		 * @param integer $intGameID
+		 * @return multitype enabled
+		 */
+		public function get_enabled($intGameID){
+			if (isset($this->clanwars_games[$intGameID])){
+				return $this->clanwars_games[$intGameID]['enabled'];
+			}
+			return false;
+		}
+		
+		public function get_html_enabled($intGameID){
+			if ($this->get_enabled($intGameID)){
+				return '<a href="manage_games.php'.$this->SID.'&disable='.$intGameID.'"><i class="fa fa-check-square-o fa-lg icon-color-green"></i></a>';
+			} else {
+				return '<a href="manage_games.php'.$this->SID.'&enable='.$intGameID.'"><i class="fa fa-square-o fa-lg icon-color-red"></i></a>';
+					
+			}
+		}
+		
+		public function get_statistics($intGameID, $intClanID=false){
+			$arrStats = array('wins' => 0, 'equal' => 0, 'loss' => 0);
+			if (!$intClanID){
+				$arrWars = $this->pdh->get('clanwars_wars', 'id_list', array());	
+			} else {
+				$arrWars = $this->pdh->get('clanwars_wars', 'wars_for_clan', array($intClanID));
+			}
+				
+			foreach($arrWars as $intWarID){
+				if ($this->pdh->get('clanwars_wars', 'gameID', array($intWarID)) != $intGameID) continue;
+				
+				$result = $this->pdh->get('clanwars_wars', 'win', array($intWarID));
+				switch($result){
+					case -1: $arrStats['loss']++; break;
+					case 1: $arrStats['wins']++; break;
+					default: $arrStats['equal']++;
+				}
+			}
+				
+			return $arrStats;
+		}
+		
+		public function get_team_statistics($intGameID, $intTeamID){
+			$arrStats = array('wins' => 0, 'equal' => 0, 'loss' => 0);
+			$arrWars = $this->pdh->get('clanwars_wars', 'wars_for_team', array($intTeamID));
+			
+			foreach($arrWars as $intWarID){
+				if ($this->pdh->get('clanwars_wars', 'gameID', array($intWarID)) != $intGameID) continue;
+			
+				$result = $this->pdh->get('clanwars_wars', 'win', array($intWarID));
+				switch($result){
+					case -1: $arrStats['loss']++; break;
+					case 1: $arrStats['wins']++; break;
+					default: $arrStats['equal']++;
+				}
+			}
+			
+			return $arrStats;
 		}
 
 	}//end class

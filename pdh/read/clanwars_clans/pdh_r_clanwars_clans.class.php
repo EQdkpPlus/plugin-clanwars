@@ -160,12 +160,17 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			if ($country && strlen($country)){
 				$this->init_countries();
 				if (!$blnWithCountryName){
-					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.svg" alt="'.$country.'" class="coretip" data-coretip="'.ucfirst(strtolower($this->countries[$country])).'" />';
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.svg" alt="'.$country.'" class="coretip" height="16" data-coretip="'.ucfirst(strtolower($this->countries[$country])).'" />';
 				} else {
-					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.svg" alt="'.$country.'" /> '.ucfirst(strtolower($this->countries[$country]));
+					return '<img src="'.$this->server_path.'images/flags/'.strtolower($country).'.svg" alt="'.$country.'" height="16" /> '.ucfirst(strtolower($this->countries[$country]));
 				}
 			}
 			return '';
+		}
+		
+		public function get_clanID_decorated($intClanID){
+			$strOut = $this->get_html_country($intClanID).' <a href="'.$this->routing->build(array('clanwars', 'Clan'), $this->get_name($intClanID).', c'.$intClanID).'">'.$this->get_name($intClanID).'</a>';
+			return $strOut;
 		}
 
 		/**
@@ -179,6 +184,13 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_html_website($intClanID){
+			if (strlen($this->get_website($intClanID))){
+				return '<a href="'.$this->get_website($intClanID).'" rel="nofollow"><i class="fa fa-external-link"></i>'.$this->get_website($intClanID).'</a>';
+			}
+			return '';
+		}
 
 		/**
 		 * Returns estdate for $intClanID				
@@ -190,6 +202,10 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 				return $this->clanwars_clans[$intClanID]['estdate'];
 			}
 			return false;
+		}
+		
+		public function get_html_estdate($intClanID){
+			return $this->time->user_date($this->get_estdate($intClanID));
 		}
 
 		/**
@@ -272,6 +288,16 @@ if ( !class_exists( "pdh_r_clanwars_clans" ) ) {
 				include($this->root_path.'core/country_states.php');
 				$this->countries = $country_array;
 			}
+		}
+		
+		public function get_games_for_clan($intClanID){
+			$arrTeams = $this->pdh->get('clanwars_teams', 'teamsForClan', array($intClanID));
+			$arrOut = array();
+			foreach($arrTeams as $intTeamID){
+				$arrOut[] = $this->pdh->get('clanwars_teams', 'gameID', array($intTeamID));
+			}
+			
+			return array_unique($arrOut);
 		}
 
 	}//end class

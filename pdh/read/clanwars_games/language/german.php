@@ -22,6 +22,7 @@ if ( !defined('EQDKP_INC') ){
 
 $module_lang = array(
 	'actions'		=> '',
+	'enabled'		=> '',
 	'icon'			=> 'Icon',
 	'name'			=> 'Name',
 	'version'		=> 'Version',

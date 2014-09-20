@@ -1,0 +1,94 @@
+<!-- IF S_NORMAL_HEADER -->
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="{EQDKP_CONTROLLER_PATH}{SID}" title="{L_home}"><i class="fa fa-home"></i></a></li>
+		<li><a href="{EQDKP_CONTROLLER_PATH}Clanwars/Matches{SEO_EXTENSION}{SID}">{L_clanwars}: {L_cw_matches}</a></li>
+		<li class="current"><a>{L_cw_match}: {MATCHNAME}</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+
+<div class="contentHeader">
+	<h1 class="contentTitle">{L_cw_match}: {MATCHNAME}</h1>
+</div>
+
+<!-- ENDIF -->
+<style>
+.clanresultContainer div {
+	text-align: center;
+} 	
+
+.clanresult {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.clanresultContainer td {
+	vertical-align: middle !important;
+}
+
+.clanname {
+	font-weight: bold;
+}
+
+.clanversus {
+	margin-top: 5px;
+}
+
+</style>
+
+<table width="100%" class="borderless clanresultContainer">
+	<tr>
+		<td width="40%">
+			<div class="clanlogo">{OWN_CLANLOGO}</div>
+			<div class="clanteam">{OWN_CLANTEAM}</div>
+			<div class="clanname">{OWN_CLANNAME}</div>
+		</td>
+		<td width="20%">
+			<div class="clanresult">{WAR_RESULT}</div>
+			<div class="clanversus">{WAR_VERSUS}</div>
+		</td>
+		<td width="40%">
+			<div class="clanlogo">{CLANLOGO}</div>
+			<div class="clanteam">{CLANTEAM}</div>
+			<div class="clanname">{CLANNAME}</div>
+		</td>
+	</tr>	
+</table>
+
+
+<fieldset class="settings mediumsettings">
+	<legend>{L_cw_matchdetails}</legend>
+	<dl>
+		<dt><label>{L_cw_wars_f_date}</label><br /><span></span></dt>
+		<dd>{WAR_DATE}</dd>
+	</dl>	
+	<dl>
+		<dt><label>{L_cw_wars_f_gameID}</label><br /><span></span></dt>
+		<dd>{WAR_GAME}</dd>
+	</dl>
+	<dl>
+		<dt><label>{L_cw_wars_f_categoryID}</label><br /><span></span></dt>
+		<dd>{WAR_CATEGORY}</dd>
+	</dl>
+	<!-- IF WAR_WEBSITE != "" -->
+	<dl>
+		<dt><label>{L_cw_wars_f_website}</label><br /><span></span></dt>
+		<dd>{WAR_WEBSITE}</dd>
+	</dl>
+	<!-- ENDIF -->
+	<!-- IF WAR_OWNREPORT != "" -->
+	<dl>
+		<dt><label>{L_cw_wars_f_ownReport}</label><br /><span></span></dt>
+		<dd>{WAR_OWNREPORT}</dd>
+	</dl>
+	<!-- ENDIF -->
+	<!-- IF WAR_REPORT != "" -->
+	<dl>
+		<dt><label>{L_cw_wars_f_report}</label><br /><span></span></dt>
+		<dd>{WAR_REPORT}</dd>
+	</dl>
+	<!-- ENDIF -->
+</fieldset>
+
+{COMMENTS}

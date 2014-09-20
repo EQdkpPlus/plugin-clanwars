@@ -33,10 +33,11 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 	public $presets = array(
 		'clanwars_teams_id' => array('id', array('%intTeamID%'), array()),
 		'clanwars_teams_name' => array('name', array('%intTeamID%'), array()),
+		'clanwars_teams_name_decorated' => array('name_decorated', array('%intTeamID%'), array()),
 		'clanwars_teams_description' => array('description', array('%intTeamID%'), array()),
 		'clanwars_teams_icon' => array('icon', array('%intTeamID%'), array()),
 		'clanwars_teams_members' => array('members', array('%intTeamID%'), array()),
-		'clanwars_teams_gameID' => array('gameID', array('%intTeamID%'), array()),
+		'clanwars_teams_gameID' => array('gameID', array('%intTeamID%', '%link_fe%'), array()),
 		'clanwars_teams_clanID' => array('clanID', array('%intTeamID%'), array()),
 		'clanwars_teams_actions' => array('actions', array('%intTeamID%', '%link_url%', '%link_url_suffix%'), array()),
 	);
@@ -131,6 +132,10 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 			}
 			return false;
 		}
+		
+		public function get_name_decorated($intTeamID){			
+			return '<a href="'.$this->routing->build(array('clanwars', 'Teams'), $this->get_name($intTeamID).', t'.$intTeamID).'">'.$this->get_html_icon($intTeamID).$this->get_name($intTeamID).'</a>';
+		}
 
 		/**
 		 * Returns description for $intTeamID				
@@ -207,8 +212,15 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 			return false;
 		}
 		
-		public function get_html_gameID($intTeamID){
-			return $this->pdh->geth('clanwars_games', 'name', array($this->get_gameID($intTeamID)));
+		public function get_html_gameID($intTeamID, $blnLinkFrontend=false){
+			$intGameID = $this->get_gameID($intTeamID);
+			$strGameName = $this->pdh->geth('clanwars_games', 'name', array($this->get_gameID($intTeamID)));
+			
+			if ($blnLinkFrontend){
+				return '<a href="'.$this->routing->build(array('clanwars', 'Game'), $strGameName.', g'.$intGameID).'">'.$strGameName.'</a>';
+			}
+			
+			return $strGameName;
 		}
 
 		/**
@@ -235,6 +247,22 @@ if ( !class_exists( "pdh_r_clanwars_teams" ) ) {
 			return $this->pdh->geth('clanwars_clans', 'name', array($this->get_clanID($intTeamID)));
 		}
 
+		public function get_statistics($intTeamID){			
+			$arrStats = array('wins' => 0, 'equal' => 0, 'loss' => 0);
+			$arrWars = $this->pdh->get('clanwars_wars', 'wars_for_team', array($intTeamID));
+			
+			foreach($arrWars as $intWarID){
+				$result = $this->pdh->get('clanwars_wars', 'win', array($intWarID));
+				switch($result){
+					case -1: $arrStats['loss']++; break;
+					case 1: $arrStats['wins']++; break;
+					default: $arrStats['equal']++;
+				}
+			}
+			
+			return $arrStats;
+		}		
+		
 	}//end class
 }//end if
 ?>

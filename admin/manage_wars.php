@@ -44,7 +44,7 @@ class clanwarsManageWars extends page_generic
     if (!$this->pm->check('clanwars', PLUGIN_INSTALLED))
       message_die($this->user->lang('cw_not_installed'));
 	  
-	$this->user->check_auth('a_clanwars_manage_wars');  
+	$this->user->check_auth('a_clanwars_manage_wars');
 
     $handler = array(
       'save' => array('process' => 'save', 'csrf' => true),
@@ -115,7 +115,7 @@ class clanwarsManageWars extends page_generic
 			'ownPlayers' => array(
 				'type'		=> 'multiselect',
 				'options'	=> $arrUser,
-			),		
+			),
 		),
 		'war'	=> array(
 			'date'	=> array(
@@ -136,12 +136,12 @@ class clanwarsManageWars extends page_generic
 			'playerCount' => array(
 				'type'		=> 'text',
 				'size'		=> 1,
-				'text2'		=> ' vs. '.new htext('playerCount2', array('size' => 1)),
+				'text2'		=> ' vs. '.(new htext('playerCount2', array('size' => 1)))->output(),
 			),
 			'result' => array(
 				'type'		=> 'text',
 				'size'		=> 1,
-				'text2'		=> ' : '.new htext('result2', array('size' => 1)),
+				'text2'		=> ' : '.(new htext('result2', array('size' => 1)))->output(),
 			),
 			'website' => array(
 				'type'		=> 'text',
@@ -196,11 +196,11 @@ class clanwarsManageWars extends page_generic
 		
 		$arrFields = $this->fields();
 		if($intWarID){
-			$arrData = $this->pdh->get('clanwars_wars', 'data', array($intWarID));			
-			$arrFields['war']['playerCount']['text2'] = ' vs. '.new htext('playerCount2', array('size' => 1, 'value' => $arrData['playerCount'][1]));
+			$arrData = $this->pdh->get('clanwars_wars', 'data', array($intWarID));
+			$arrFields['war']['playerCount']['text2'] = ' vs. '.(new htext('playerCount2', array('size' => 1, 'value' => $arrData['playerCount'][1])))->output();
 			$arrData['playerCount'] = $arrData['playerCount'][0];
 			
-			$arrFields['war']['result']['text2'] = ' vs. '.new htext('result2', array('size' => 1, 'value' => $arrData['result'][1]));
+			$arrFields['war']['result']['text2'] = ' vs. '.(new htext('result2', array('size' => 1, 'value' => $arrData['result'][1])))->output();
 			$arrData['result'] = $arrData['result'][0];
 			
 			$arrData['players'] = implode("\r\n", $arrData['players']);
@@ -247,7 +247,7 @@ class clanwarsManageWars extends page_generic
 				'options_only'	=> true,
 				'options' 		=> $this->pdh->aget('clanwars_teams', 'name', 0, array($this->pdh->get('clanwars_teams', 'teamsForClan', array($this->in->get('requestid', 0))))),
 			);
-			echo new hdropdown('teamID', $options);
+			echo (new hdropdown('teamID', $options))->output();
 			exit;
 		}
 		
